@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Coding Sandbox — Interview Coach</title>
+
+<!-- CodeMirror 5 (CDN — reliable, no build step) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-ocean.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/go/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+
+<link rel="stylesheet" href="/static/sandbox.css" />
+</head>
+<body class="standalone">
+
+<!-- backdrop (used when embedded) -->
+<div id="sandbox-overlay"></div>
+
+<!-- Sliding / fullpage panel -->
+<div id="sandbox-panel" class="active">
+
+  <!-- Header -->
+  <div id="sb-header">
+    <h2>💻 Coding Sandbox</h2>
+    <select id="sb-lang-select">
+      <option value="python">Python</option>
+      <option value="javascript">JavaScript</option>
+      <option value="java">Java</option>
+      <option value="cpp">C++</option>
+      <option value="go">Go</option>
+    </select>
+    <button id="sb-close" title="Close">✕</button>
+  </div>
+
+  <!-- Question description set by agent -->
+  <div id="sb-question-area">
+    <div id="sb-question-label">Problem Statement</div>
+    <div id="sb-question-text">Waiting for the interview agent to send a question…</div>
+  </div>
+
+  <!-- CodeMirror mounts here -->
+  <div id="sb-editor-wrap">
+    <div id="sb-editor-host"></div>
+  </div>
+
+  <!-- Run / Submit / Reset -->
+  <div id="sb-actions">
+    <button class="sb-btn run"    id="sb-run">▶ Run Code</button>
+    <button class="sb-btn submit" id="sb-submit">✔ Submit</button>
+    <span id="sb-status"></span>
+    <button class="sb-btn reset"  id="sb-reset">↺ Reset</button>
+  </div>
+
+  <!-- Output console -->
+  <div id="sb-console">
+    <div id="sb-console-header">Output Console</div>
+    <pre id="sb-console-output" class="info">Run your code to see output here.</pre>
+  </div>
+
+</div>
+
+<script src="/static/sandbox.js"></script>
+</body>
+</html>

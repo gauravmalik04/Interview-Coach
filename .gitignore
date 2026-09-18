@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Environment / secrets
+.env
+.env.*
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Legacy standalone prototype (replaced by sandbox_tool/)
+index.html
+script.js
+styles.css
+proxy.py
+jdoodle.py
+test_proxy.py
+new_flow.md
+test.py
+test2.py
+debug.py
+
+# docs
+architecture.md
+flow.md
+implementation_plan.md
+interview-agent-implementation-plan.md
+
+
+
