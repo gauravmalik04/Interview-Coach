@@ -48,10 +48,34 @@ async function handleLogin(event) {
 
     if (res.ok) {
       window.api.setAuthData(data);
+      localStorage.removeItem('gaius_candidate_profile');
       window.api.showToast(`Welcome back, ${data.user.full_name}!`, 'success');
+
+      // Check if user already has a saved profile in the database
+      try {
+        const profRes = await window.api.get('/auth/profile');
+        if (profRes.ok) {
+          const profData = await profRes.json();
+          const hasProfile = profData && (
+            profData.is_configured ||
+            (profData.personal && profData.personal.education && profData.personal.education.trim() !== '')
+          );
+          if (hasProfile) {
+            // Existing user with saved profile -> go directly to dashboard
+            setTimeout(() => {
+              window.location.href = '/dashboard';
+            }, 600);
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('Profile status check error on login:', e);
+      }
+
+      // If user had never completed profile setup, prompt them to set it
       setTimeout(() => {
-        window.location.href = '/dashboard';
-      }, 700);
+        window.location.href = '/profile?setup=true';
+      }, 600);
     } else {
       window.api.showToast(data.detail || 'Login failed. Please check your credentials.', 'error');
     }
@@ -93,9 +117,12 @@ async function handleRegister(event) {
 
     if (res.ok) {
       window.api.setAuthData(data);
-      window.api.showToast(`Account created! Welcome, ${data.user.full_name}!`, 'success');
+      // Clear any prior user's cached profile in local storage
+      localStorage.removeItem('gaius_candidate_profile');
+      window.api.showToast(`Account created! Welcome, ${data.user.full_name}! Please set up your profile.`, 'success');
+      // Brand new user must set their profile first
       setTimeout(() => {
-        window.location.href = '/dashboard';
+        window.location.href = '/profile?setup=true';
       }, 700);
     } else {
       window.api.showToast(data.detail || 'Registration failed.', 'error');

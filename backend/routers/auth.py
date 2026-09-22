@@ -1,3 +1,4 @@
+import json
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -9,6 +10,10 @@ from backend.schemas.auth import (
     TokenResponse,
     TokenRefreshRequest,
     UserResponse,
+    CandidateProfileSchema,
+    CandidatePersonalInfo,
+    CandidateTargetInfo,
+    CandidatePreferences,
 )
 from backend.services.auth_service import auth_service
 from backend.core.dependencies import get_current_user
@@ -42,3 +47,53 @@ async def refresh_token(request: TokenRefreshRequest, db: AsyncSession = Depends
 async def get_me(current_user: User = Depends(get_current_user)):
     """Get profile information of the currently authenticated candidate."""
     return current_user
+
+@router.get("/profile", response_model=CandidateProfileSchema)
+async def get_profile(current_user: User = Depends(get_current_user)):
+    """Get candidate profile details. If configured in DB, returns saved details with is_configured=True."""
+    if current_user.profile_data:
+        try:
+            data = json.loads(current_user.profile_data)
+            data.setdefault("personal", {})["email"] = current_user.email
+            has_edu = bool(data.get("personal", {}).get("education"))
+            has_role = bool(data.get("target", {}).get("role"))
+            data["is_configured"] = bool(data.get("is_configured", False) or (has_edu and has_role))
+            return CandidateProfileSchema(**data)
+        except Exception:
+            pass
+
+    return CandidateProfileSchema(
+        is_configured=False,
+        personal=CandidatePersonalInfo(
+            name=current_user.full_name or "",
+            email=current_user.email,
+            education="",
+            experience_level="",
+        ),
+        target=CandidateTargetInfo(
+            role="",
+            company="",
+        ),
+        skills=[],
+        preferences=CandidatePreferences(
+            input_mode="",
+            preferred_difficulty="",
+        ),
+    )
+
+@router.put("/profile", response_model=CandidateProfileSchema)
+async def update_profile(
+    profile: CandidateProfileSchema,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Save and persist candidate profile details, marking is_configured=True."""
+    profile.personal.email = current_user.email
+    profile.is_configured = True
+    current_user.full_name = profile.personal.name
+    current_user.profile_data = json.dumps(profile.model_dump())
+    db.add(current_user)
+    await db.commit()
+    await db.refresh(current_user)
+    return profile
+

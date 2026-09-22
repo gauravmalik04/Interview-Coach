@@ -8,6 +8,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
+  // Set avatar initials if present
+  const user = window.api.getUser();
+  if (user && user.full_name) {
+    const initialsEl = document.getElementById('user-avatar-initials');
+    if (initialsEl) {
+      const parts = user.full_name.trim().split(/\s+/);
+      const initials = parts.length > 1
+        ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+        : (parts[0] ? parts[0].slice(0, 2).toUpperCase() : 'GM');
+      initialsEl.textContent = initials;
+    }
+  }
+
   const urlParams = new URLSearchParams(window.location.search);
   const interviewId = urlParams.get('interview_id');
   const autoGenerate = urlParams.get('auto_generate') === 'true';

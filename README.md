@@ -6,8 +6,11 @@
 [![ChromaDB](https://img.shields.io/badge/ChromaDB-RAG_Vector_Store-FF4B4B?style=flat)](https://www.trychroma.com/)
 [![HuggingFace](https://img.shields.io/badge/HuggingFace-Inference_API-FFD21E?style=flat&logo=huggingface&logoColor=black)](https://huggingface.co/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Presentation](https://img.shields.io/badge/Presentation-Google_Slides-EA4335?style=flat&logo=google-slides&logoColor=white)](https://docs.google.com/presentation/d/1oUL1YGlsIsbox-qexv6Wi-gmS7iTpwGW/edit?usp=sharing&ouid=111265406321287427023&rtpof=true&sd=true)
 
 **GAIUS** is an enterprise-grade, full-stack adaptive technical interview platform engineered to simulate rigorous FAANG+ engineering interviews. Powered by asynchronous LLM multi-agents, vector-grounded RAG (ChromaDB), real-time WebSockets, and a 7-dimensional evaluation engine, GAIUS assesses candidates on both technical depth and communication invariants, paired with a dedicated AI Technical Mentor (**Hermes**).
+
+> 📽️ **Project Presentation Deck**: [View Google Slides Presentation](https://docs.google.com/presentation/d/1oUL1YGlsIsbox-qexv6Wi-gmS7iTpwGW/edit?usp=sharing&ouid=111265406321287427023&rtpof=true&sd=true)
 
 ---
 
@@ -81,6 +84,7 @@ AI-Interview/
 │   ├── js/                   # API client, WebSocket handlers, markdown renderer
 │   ├── index.html            # Landing page & authentication portal
 │   ├── dashboard.html        # Candidate launchpad & recent scorecard snapshot
+│   ├── profile.html          # Dual-mode candidate profile (View Card & 4-step Wizard)
 │   ├── interview.html        # Live interview workspace with code scratchpad
 │   ├── history.html          # Session archives & on-demand report generation
 │   ├── report.html           # 7-dimension scorecard & radar breakdown
@@ -176,6 +180,7 @@ AI-Interview/
 |---|---|---|
 | **Landing & Auth** | `/` | Candidate sign-in and account registration. |
 | **Dashboard** | `/dashboard` | Technical domain selection, mode picker, preferred language radio buttons (max 3/row), and latest session snapshot. |
+| **Candidate Profile** | `/profile` | Dual-mode candidate profile: view mode summary and 4-step interactive wizard (personal info, target role, skills, preferences). |
 | **Interview Workspace** | `/interview?session_id={id}` | Real-time chat with AI interviewer, collapsible code scratchpad, live countdown timer, and evaluation rubric preview. |
 | **History** | `/history` | Searchable archive of all past interviews with status pills and on-demand report trigger. |
 | **Scorecard Report** | `/report?interview_id={id}` | Deep evaluation across the 7 DSA metrics, strengths, weaknesses, Big-O summary, and detailed action points. |

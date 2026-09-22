@@ -79,12 +79,17 @@ class ApiClient {
   }
 
   clearAuth() {
+    const user = this.getUser();
+    if (user && user.id) {
+      localStorage.removeItem(`gaius_profile_${user.id}`);
+    }
     sessionStorage.removeItem(this.tokenKey);
     sessionStorage.removeItem(this.refreshKey);
     sessionStorage.removeItem(this.userKey);
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.refreshKey);
     localStorage.removeItem(this.userKey);
+    localStorage.removeItem('gaius_candidate_profile');
   }
 
   isAuthenticated() {

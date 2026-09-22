@@ -19,6 +19,7 @@ class User(Base):
     email = Column(String(255), unique=True, index=True, nullable=False)
     hashed_password = Column(String(255), nullable=False)
     full_name = Column(String(255), nullable=False)
+    profile_data = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), default=utc_now, nullable=False)
 
     # Relationships

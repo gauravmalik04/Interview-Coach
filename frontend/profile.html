@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Candidate Profile — GAIUS</title>
+  <meta name="description" content="Manage your engineering candidate profile, target roles, technical skills, and adaptive interview preferences.">
+
+  <!-- Google Fonts: Plus Jakarta Sans, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/css/main.css">
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+  <link rel="stylesheet" href="/static/css/profile.css">
+</head>
+<body class="profile-body">
+
+  <!-- BEGIN: Floating Glassmorphic Top Navigation -->
+  <header class="floating-nav-header anim-nav-drop">
+    <div class="floating-nav-pill">
+      <!-- Brand Logo -->
+      <a class="nav-brand-link" href="/dashboard">
+        <span class="nav-brand-title">GAIUS</span>
+      </a>
+
+      <!-- Pill Nav Tabs -->
+      <div class="nav-menu-pills">
+        <a class="nav-menu-link" href="/dashboard">Dashboard</a>
+        <a class="nav-menu-link" href="/interview" onclick="handleNavInterviewClick(event)">Interview</a>
+        <a class="nav-menu-link" href="/history">History</a>
+        <a class="nav-menu-link" href="/coach">AI Mentor</a>
+      </div>
+
+      <!-- User Profile & Sign Out -->
+      <div class="nav-user-area">
+        <a href="/profile" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;" title="Your Candidate Profile">
+          <div id="user-avatar-initials" style="width: 28px; height: 28px; border-radius: 50%; background-color: rgb(253, 186, 116); color: rgb(67, 20, 7); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; border: 2px solid rgb(249, 115, 22); box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.25);">GM</div>
+          <span id="user-full-name" style="font-size: 0.82rem; font-weight: 700; color: rgb(30, 41, 59); display: none;">Candidate</span>
+        </a>
+        <button onclick="logout()" class="btn-signout" type="button">Sign Out</button>
+      </div>
+    </div>
+  </header>
+  <!-- END: Floating Navigation -->
+
+  <!-- BEGIN: Main Page Container (centered max-width: 800px frame) -->
+  <main class="profile-outer-frame anim-hero-up">
+
+    <!-- Success Notification Banner -->
+    <div id="profile-success-banner" class="profile-banner banner-success">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span style="font-size: 1.1rem;">✨</span>
+        <span id="success-banner-text">Candidate profile updated successfully!</span>
+      </div>
+      <button class="banner-dismiss-btn" type="button" onclick="dismissSuccessBanner()">&times;</button>
+    </div>
+
+    <!-- Validation Error Banner -->
+    <div id="profile-error-banner" class="profile-banner banner-error">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span style="font-size: 1.1rem;">⚠️</span>
+        <span id="error-banner-text">Please resolve the indicated errors.</span>
+      </div>
+      <button class="banner-dismiss-btn" type="button" onclick="dismissErrorBanner()">&times;</button>
+    </div>
+
+    <!-- Page Title Bar with Persistent Mode Toggle -->
+    <section class="profile-page-header">
+      <div class="profile-header-titles">
+        <h1>Candidate Profile <span>👤</span></h1>
+        <p>Manage your engineering identity, target company goals, and interview preferences.</p>
+      </div>
+      <button id="btn-mode-toggle" class="btn-mode-toggle" type="button">
+        Edit Profile ✏️
+      </button>
+    </section>
+
+    <!-- ====================================================================
+         PHASE 2: VIEW MODE CARD (#profile-view-card)
+         ==================================================================== -->
+    <section id="profile-view-card" class="profile-card">
+      <!-- Unconfigured Alert Banner (shown when candidate has not set their profile yet) -->
+      <div id="unconfigured-alert-box" class="unconfigured-alert-card" style="display: none;">
+        <div class="unconfigured-alert-content">
+          <div class="unconfigured-alert-icon">⚠️</div>
+          <div>
+            <h3 class="unconfigured-alert-title">Profile Not Set Yet</h3>
+            <p class="unconfigured-alert-desc">You haven't set up your candidate profile yet. Please complete the setup wizard below so your background, target role, and interview preferences appear here.</p>
+          </div>
+        </div>
+        <button type="button" id="btn-alert-setup" class="btn-setup-profile">
+          Set Up Profile Now 🚀
+        </button>
+      </div>
+
+      <!-- Avatar & Headline Row -->
+      <div class="view-header-row">
+        <div id="view-avatar-initials" class="candidate-avatar-large">?</div>
+        <div class="candidate-identity">
+          <div class="candidate-name-row">
+            <h2 id="view-name" class="candidate-name">Candidate</h2>
+          </div>
+          <div id="view-email" class="candidate-email"></div>
+          <div class="candidate-pill-badges">
+            <span id="view-role-badge" class="pill-badge badge-unset">Target: Not set</span>
+            <span id="view-company-badge" class="pill-badge badge-unset">Company: Not set</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2-Column Metadata Grid -->
+      <div class="profile-meta-grid">
+        <!-- Left Box: Personal & Education -->
+        <div class="meta-box">
+          <div class="meta-box-title">
+            <span>🎓</span> Personal & Education
+          </div>
+          <div class="meta-field">
+            <span class="meta-field-label">Full Name</span>
+            <span id="view-meta-fullname" class="meta-field-val"><span class="val-empty">— Not set yet</span></span>
+          </div>
+          <div class="meta-field">
+            <span class="meta-field-label">Education Background</span>
+            <span id="view-meta-education" class="meta-field-val"><span class="val-empty">— Not set yet</span></span>
+          </div>
+          <div class="meta-field">
+            <span class="meta-field-label">Experience Tier</span>
+            <span id="view-meta-experience" class="meta-field-val"><span class="val-empty">— Not set yet</span></span>
+          </div>
+        </div>
+
+        <!-- Right Box: Target Goals -->
+        <div class="meta-box">
+          <div class="meta-box-title">
+            <span>🎯</span> Target Career Goals
+          </div>
+          <div class="meta-field">
+            <span class="meta-field-label">Target Role</span>
+            <span id="view-meta-role" class="meta-field-val"><span class="val-empty">— Not set yet</span></span>
+          </div>
+          <div class="meta-field">
+            <span class="meta-field-label">Target Company</span>
+            <span id="view-meta-company" class="meta-field-val"><span class="val-empty">— Not set yet</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Technical Skills View Section -->
+      <div class="profile-skills-section">
+        <div class="section-subtitle">
+          <span>⚡</span> Technical Skills & Focus Areas
+        </div>
+        <div id="view-skills-cloud" class="skills-pill-cloud">
+          <span class="val-empty">No skills added yet. Complete setup to add your skills.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         PHASE 3: EDIT MODE MULTI-STEP WIZARD (#profile-wizard-card) - 3 STEPS
+         ==================================================================== -->
+    <section id="profile-wizard-card" class="profile-card" style="display: none;">
+      <!-- Step Progress Header (3 Steps) -->
+      <div class="wizard-step-progress">
+        <div class="wizard-progress-bar-bg">
+          <div id="wizard-progress-fill" class="wizard-progress-bar-fill"></div>
+        </div>
+
+        <button type="button" class="step-node active" data-step="0">
+          <div class="step-circle">1</div>
+          <span class="step-label">Personal Info</span>
+        </button>
+
+        <button type="button" class="step-node" data-step="1">
+          <div class="step-circle">2</div>
+          <span class="step-label">Target Goals</span>
+        </button>
+
+        <button type="button" class="step-node" data-step="2">
+          <div class="step-circle">3</div>
+          <span class="step-label">Skills & Submit</span>
+        </button>
+      </div>
+
+      <!-- STEP 0: Personal Information -->
+      <div id="wizard-step-0" class="wizard-step-pane active">
+        <div class="step-heading-group">
+          <h2>Step 1: Personal Information & Education</h2>
+          <p>Tell us about your educational background and technical seniority.</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="input-name">
+            Full Name <span class="required-star">*</span>
+          </label>
+          <input type="text" id="input-name" class="form-input" placeholder="e.g. Alex Morgan" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="input-education">
+            Education / Degree <span class="required-star">*</span>
+          </label>
+          <input type="text" id="input-education" class="form-input" placeholder="e.g. B.S. in Computer Science, Stanford University" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="select-experience">
+            Experience Level <span class="required-star">*</span>
+          </label>
+          <select id="select-experience" class="form-select">
+            <option value="" disabled selected>Select your experience tier...</option>
+            <option value="Fresher (0 yrs)">Fresher (0 yrs / Student)</option>
+            <option value="1–2 years">1–2 years (Early Career)</option>
+            <option value="3–5 years">3–5 years (Mid-Level Engineer)</option>
+            <option value="Senior (6+ yrs)">Senior (6+ yrs / Staff)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- STEP 1: Target Role & Target Company -->
+      <div id="wizard-step-1" class="wizard-step-pane">
+        <div class="step-heading-group">
+          <h2>Step 2: Target Role & Target Company</h2>
+          <p>Define the engineering career profile and organization targets you are aiming for.</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="select-role">
+            Target Engineering Role <span class="required-star">*</span>
+          </label>
+          <select id="select-role" class="form-select">
+            <option value="" disabled selected>Select target engineering role...</option>
+            <option value="Software Engineer">Software Engineer (General DSA / Systems)</option>
+            <option value="Backend Engineer">Backend Engineer (APIs, Databases, Microservices)</option>
+            <option value="Frontend Engineer">Frontend Engineer (Web UI, React, Architecture)</option>
+            <option value="Full Stack Engineer">Full Stack Engineer (End-to-End)</option>
+            <option value="ML Engineer">ML Engineer (Machine Learning, PyTorch, LLMs)</option>
+            <option value="System Architect">System Architect (High-Scale Distributed Systems)</option>
+            <option value="DevOps / Cloud Engineer">DevOps / Cloud Engineer (CI/CD, Kubernetes, SRE)</option>
+            <option value="Data Engineer">Data Engineer (Pipelines, Spark, ETL, SQL)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="input-company">
+            Target Company (Optional)
+          </label>
+          <input type="text" id="input-company" class="form-input" placeholder="e.g. Google, Meta, Anthropic, Stripe" />
+        </div>
+      </div>
+
+      <!-- STEP 2: Technical Skills & Submit -->
+      <div id="wizard-step-2" class="wizard-step-pane">
+        <div class="step-heading-group">
+          <h2>Step 3: Technical Skills & Submit Profile</h2>
+          <p>Specify technologies and topics you want your interview evaluations calibrated on, then submit your profile.</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="skill-input">
+            Add Skill / Topic <span class="required-star">*</span>
+          </label>
+          <div class="skill-input-bar">
+            <input type="text" id="skill-input" class="form-input" placeholder="Type a skill (e.g. Python, Docker, Redis) and press Enter" />
+            <button type="button" id="btn-add-skill" class="btn-inline-add">+ Add</button>
+          </div>
+        </div>
+
+        <!-- Selected Skills Badges Container -->
+        <div class="form-group">
+          <label class="form-label">Selected Skills & Tags</label>
+          <div id="selected-skills-container" class="selected-skills-container">
+            <!-- Dynamically populated tags with remove buttons -->
+          </div>
+        </div>
+
+        <!-- Quick Suggestions -->
+        <div class="quick-suggestions-wrap">
+          <div class="quick-suggestions-title">⚡ Quick-Add Suggestions</div>
+          <div id="quick-suggestions-list" class="quick-suggestions-list">
+            <!-- Dynamically populated buttons -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Wizard Navigation Controls -->
+      <div class="wizard-footer">
+        <button type="button" id="btn-wizard-back" class="btn-wizard-back hidden">
+          ← Back
+        </button>
+        <button type="button" id="btn-wizard-continue" class="btn-wizard-continue">
+          Continue →
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Editorial Footer -->
+  <footer class="editorial-footer">
+    <div class="editorial-footer-inner">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span class="status-ping-dot" style="width: 8px; height: 8px; border-radius: 50%; background-color: rgb(251, 113, 133); display: inline-block;"></span>
+        <span>Systems operational • Gaius Enterprise v2.4</span>
+      </div>
+      <div class="editorial-footer-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/history">History</a>
+        <a href="/coach">AI Mentor</a>
+        <a href="/profile">Candidate Profile</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/profile.js"></script>
+  <script>
+    function logout() {
+      if (window.api) {
+        window.api.clearAuth();
+      }
+      window.location.href = '/';
+    }
+  </script>
+</body>
+</html>

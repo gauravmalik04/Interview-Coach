@@ -70,10 +70,10 @@
 
       <!-- User Profile & Sign Out -->
       <div class="flex items-center gap-3">
-        <div class="flex items-center gap-2 px-2 py-1 rounded-full hover:bg-slate-50 transition-colors duration-200 cursor-pointer">
+        <a href="/profile" class="flex items-center gap-2 px-2 py-1 rounded-full hover:bg-slate-50 transition-colors duration-200 cursor-pointer no-underline">
           <div id="user-avatar-initials" class="w-7 h-7 rounded-full flex items-center justify-center font-extrabold text-[11px] ring-2 ring-orange-400 transition-transform duration-200 hover:scale-110" style="background-color: rgb(253, 186, 116); color: rgb(67, 20, 7);">GM</div>
           <span id="user-full-name" class="text-xs font-semibold hidden sm:inline-block select-none" style="color: rgb(30, 41, 59);">Candidate</span>
-        </div>
+        </a>
         <button onclick="logout()" class="px-3 py-1 text-xs font-medium rounded-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm active:scale-95 cursor-pointer" style="background-color: rgb(241, 245, 249); color: rgb(71, 85, 105); border: 1px solid rgb(203, 213, 225);" type="button">Sign Out</button>
       </div>
     </div>

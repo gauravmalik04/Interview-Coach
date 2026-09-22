@@ -647,6 +647,21 @@ class CoachController {
 
 // Instantiate on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
+  // Set avatar initials if present
+  if (window.api) {
+    const user = window.api.getUser();
+    if (user && user.full_name) {
+      const initialsEl = document.getElementById('user-avatar-initials');
+      if (initialsEl) {
+        const parts = user.full_name.trim().split(/\s+/);
+        const initials = parts.length > 1
+          ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+          : (parts[0] ? parts[0].slice(0, 2).toUpperCase() : 'GM');
+        initialsEl.textContent = initials;
+      }
+    }
+  }
+
   window.coachCtrl = new CoachController();
   window.coachCtrl.initialize();
 });

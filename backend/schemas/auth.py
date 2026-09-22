@@ -26,3 +26,24 @@ class TokenResponse(BaseModel):
 
 class TokenRefreshRequest(BaseModel):
     refresh_token: str
+
+class CandidatePersonalInfo(BaseModel):
+    name: str = Field(..., min_length=1, description="Candidate full name")
+    email: str | None = None
+    education: str = Field(default="", description="Candidate education credential")
+    experience_level: str = Field(default="", description="Experience tier")
+
+class CandidateTargetInfo(BaseModel):
+    role: str = Field(default="", description="Target role")
+    company: str = Field(default="", description="Target company")
+
+class CandidatePreferences(BaseModel):
+    input_mode: str = Field(default="text", description="'text' or 'voice'")
+    preferred_difficulty: str = Field(default="Adaptive AI", description="Preferred interview difficulty")
+
+class CandidateProfileSchema(BaseModel):
+    is_configured: bool = Field(default=False, description="Whether candidate has set profile")
+    personal: CandidatePersonalInfo
+    target: CandidateTargetInfo
+    skills: list[str] = Field(default_factory=list, description="Technical skill keywords")
+    preferences: CandidatePreferences

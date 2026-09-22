@@ -114,3 +114,7 @@ if FRONTEND_DIR.exists():
     async def serve_history():
         return _safe_serve("history.html")
 
+    @app.get("/profile", include_in_schema=False)
+    async def serve_profile():
+        return _safe_serve("profile.html")
+
