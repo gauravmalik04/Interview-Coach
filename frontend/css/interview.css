@@ -1,0 +1,1080 @@
+/* ==========================================================================
+   AI INTERVIEW PLATFORM — INTERVIEW ROOM STYLES
+   "The Amber Editorial: Radiant Sanctuary"
+   Warm Paper Canvas, Editorial Typography, Radiant Workspace
+   ========================================================================== */
+
+.interview-body {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--surface, rgb(250, 247, 242));
+  color: rgb(15, 23, 42);
+}
+
+/* ==========================================================================
+   Top Navigation
+   ========================================================================== */
+
+.interview-navbar {
+  flex-shrink: 0;
+  border-bottom: 1.5px solid rgb(254, 215, 170);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 0.65rem 0;
+  z-index: 100;
+  box-shadow: 0 4px 16px -2px rgba(251, 146, 60, 0.08);
+}
+
+.interview-navbar .navbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  max-width: 98rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.brand-name {
+  font-family: var(--font-brand, 'Cinzel');
+  font-weight: 900;
+  font-size: 1.25rem;
+  color: rgb(251, 113, 133);
+  letter-spacing: 0.16em;
+}
+
+.divider-v {
+  width: 1px;
+  height: 24px;
+  background: rgb(226, 232, 240);
+}
+
+.session-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.session-topic-badge {
+  background: rgb(254, 215, 170);
+  color: rgb(124, 45, 18);
+  border: 1px solid rgb(253, 186, 116);
+  padding: 0.25rem 0.8rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.phase-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: #DCFCE7;
+  color: #166534;
+  border: 1px solid #86EFAC;
+  text-transform: capitalize;
+}
+
+.pulse-indicator {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #16a34a;
+  box-shadow: 0 0 8px #16a34a;
+  animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px #16a34a; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.timer-box {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #ffffff;
+  border: 1.5px solid rgb(226, 232, 240);
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: rgb(15, 23, 42);
+}
+
+.connection-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgb(100, 116, 139);
+}
+
+.conn-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+.connection-pill.disconnected .conn-dot {
+  background: #ef4444;
+}
+
+/* ==========================================================================
+   Split Workspace Layout
+   ========================================================================== */
+
+.interview-workspace {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1.35fr 0.85fr;
+  gap: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  max-width: 98rem;
+  margin: 0 auto;
+  width: 100%;
+  min-height: 0;
+  height: calc(100vh - 65px);
+  transition: max-width 0.3s cubic-bezier(0.16, 1, 0.3, 1), grid-template-columns 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.interview-workspace.scratchpad-collapsed {
+  grid-template-columns: 1fr;
+  max-width: 88rem;
+}
+
+.interview-workspace.scratchpad-collapsed .workbench-column,
+.workbench-column.hidden {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Feed Column (Left)
+   ========================================================================== */
+
+.feed-column {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1.5px solid rgb(226, 232, 240);
+  border-radius: 1.5rem;
+  min-height: 0;
+  overflow: hidden;
+  box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.05);
+}
+
+.feed-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.95rem 1.75rem;
+  border-bottom: 1px solid rgb(226, 232, 240);
+  background: rgb(248, 250, 252);
+}
+
+.interviewer-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.ai-avatar-glow {
+  background: rgb(254, 215, 170);
+  border: 1.5px solid rgb(253, 186, 116);
+}
+
+.ai-avatar-small {
+  width: 30px;
+  height: 30px;
+  font-size: 0.95rem;
+  background: rgb(254, 215, 170);
+  border: 1px solid rgb(253, 186, 116);
+}
+
+.candidate-avatar {
+  background: rgb(224, 242, 254);
+  border: 1.5px solid rgb(186, 230, 253);
+}
+
+.interviewer-name {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: rgb(15, 23, 42);
+  margin-bottom: 0.1rem;
+}
+
+.interviewer-sub {
+  font-size: 0.76rem;
+  color: rgb(100, 116, 139);
+}
+
+.icon-btn {
+  background: #ffffff;
+  border: 1px solid rgb(226, 232, 240);
+  color: rgb(71, 85, 105);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.icon-btn:hover {
+  color: rgb(15, 23, 42);
+  border-color: rgb(203, 213, 225);
+  background: rgb(248, 250, 252);
+}
+
+/* ==========================================================================
+   Messages Stream
+   ========================================================================== */
+
+.messages-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+  min-height: 0;
+  scroll-behavior: smooth;
+  background-color: rgb(255, 255, 255);
+}
+
+.message-item {
+  display: flex;
+  gap: 0.85rem;
+  max-width: 96%;
+  animation: message-fade-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes message-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.message-item.ai-message {
+  align-self: flex-start;
+}
+
+.message-item.candidate-message {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.message-bubble {
+  padding: 1.1rem 1.45rem;
+  border-radius: 1.25rem;
+  line-height: 1.65;
+  font-size: 0.95rem;
+  position: relative;
+}
+
+.ai-message .message-bubble {
+  background: #ffffff;
+  border: 1.5px solid rgb(254, 215, 170);
+  color: rgb(15, 23, 42);
+  border-top-left-radius: 4px;
+  box-shadow: 0 4px 14px rgba(251, 146, 60, 0.08);
+}
+
+.candidate-message .message-bubble {
+  background: rgb(224, 242, 254);
+  border: 1.5px solid rgb(186, 230, 253);
+  color: rgb(15, 23, 42);
+  border-top-right-radius: 4px;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.08);
+}
+
+.message-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.45rem;
+  font-size: 0.76rem;
+}
+
+.ai-message .message-sender {
+  font-weight: 700;
+  color: rgb(180, 83, 9);
+}
+
+.candidate-message .message-sender {
+  font-weight: 700;
+  color: rgb(3, 105, 161);
+}
+
+.message-time {
+  opacity: 0.7;
+  color: rgb(100, 116, 139);
+}
+
+.message-text {
+  word-break: break-word;
+  white-space: normal;
+  line-height: 1.65;
+  font-size: 0.95rem;
+  color: rgb(15, 23, 42);
+}
+
+.message-text p {
+  margin-bottom: 0.75rem;
+}
+
+.message-text p:last-child {
+  margin-bottom: 0;
+}
+
+/* Headings in chat messages */
+.message-text h1,
+.message-text h2,
+.message-text h3,
+.message-text h4 {
+  font-weight: 800;
+  margin: 1rem 0 0.5rem 0;
+  line-height: 1.35;
+  color: rgb(15, 23, 42);
+}
+
+.message-text h1 { font-size: 1.25rem; }
+.message-text h2 { font-size: 1.15rem; }
+
+.message-text h3 {
+  font-size: 1.05rem;
+  color: rgb(194, 65, 12);
+  border-bottom: 1px solid rgb(254, 215, 170);
+  padding-bottom: 0.35rem;
+  margin-bottom: 0.65rem;
+}
+
+.message-text h4 { font-size: 0.98rem; }
+
+/* Bold and Em */
+.message-text strong {
+  color: rgb(194, 65, 12);
+  font-weight: 800;
+}
+
+.message-text em {
+  font-style: italic;
+}
+
+/* Inline Code */
+.message-text code {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.88em;
+  background: rgb(254, 243, 199);
+  color: rgb(180, 83, 9);
+  padding: 0.2rem 0.45rem;
+  border-radius: 5px;
+  border: 1px solid rgb(253, 230, 138);
+}
+
+/* Fenced Code Blocks */
+.message-text pre,
+.message-code-block {
+  margin: 0.85rem 0;
+  background: rgb(248, 250, 252);
+  border: 1.5px solid rgb(226, 232, 240);
+  border-radius: 0.65rem;
+  padding: 0.9rem 1.15rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.88rem;
+  overflow-x: auto;
+  color: rgb(15, 23, 42);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.message-text pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: rgb(15, 23, 42);
+}
+
+/* Lists */
+.message-text ul,
+.message-text ol {
+  margin: 0.65rem 0 0.85rem 1.4rem;
+  padding: 0;
+}
+
+.message-text li {
+  margin-bottom: 0.4rem;
+  line-height: 1.55;
+  color: rgb(51, 65, 85);
+}
+
+/* Blockquotes */
+.message-text blockquote {
+  margin: 0.85rem 0;
+  padding: 0.65rem 1rem;
+  background: rgb(255, 247, 237);
+  border-left: 4px solid rgb(251, 146, 60);
+  border-radius: 0 8px 8px 0;
+  color: rgb(71, 85, 105);
+  font-style: italic;
+}
+
+/* Phase Divider Banner */
+.phase-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.75rem 0;
+}
+
+.phase-divider-line {
+  flex: 1;
+  height: 1px;
+  background: rgb(226, 232, 240);
+}
+
+.phase-divider-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgb(124, 45, 18);
+  font-weight: 800;
+  background: rgb(254, 215, 170);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  border: 1px solid rgb(253, 186, 116);
+}
+
+/* Typing Indicator */
+.typing-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1.5rem;
+}
+
+.typing-container.hidden {
+  display: none;
+}
+
+.typing-bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
+  border: 1.5px solid rgb(254, 215, 170);
+  box-shadow: 0 2px 6px rgba(251, 146, 60, 0.08);
+}
+
+.typing-bubble .dot {
+  width: 7px;
+  height: 7px;
+  background: rgb(251, 146, 60);
+  border-radius: 50%;
+  animation: bounce-dot 1.4s infinite ease-in-out both;
+}
+
+.typing-bubble .dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-bubble .dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounce-dot {
+  0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+.typing-label {
+  font-size: 0.78rem;
+  color: rgb(100, 116, 139);
+  margin-left: 0.4rem;
+}
+
+/* ==========================================================================
+   Composer Section
+   ========================================================================== */
+
+.composer-container {
+  border-top: 1px solid rgb(226, 232, 240);
+  background: rgb(248, 250, 252);
+  padding: 1.1rem 1.75rem;
+}
+
+.input-wrapper {
+  margin-bottom: 0.75rem;
+}
+
+.composer-textarea {
+  width: 100%;
+  background: #ffffff;
+  border: 1.5px solid rgb(226, 232, 240);
+  border-radius: 0.75rem;
+  color: rgb(15, 23, 42);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  padding: 0.85rem 1rem;
+  resize: vertical;
+  min-height: 80px;
+  max-height: 220px;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.composer-textarea:focus {
+  border-color: rgb(2, 132, 199);
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+}
+
+.composer-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgb(71, 85, 105);
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+  accent-color: rgb(251, 146, 60);
+}
+
+.shortcut-tip {
+  font-size: 0.76rem;
+  color: rgb(100, 116, 139);
+}
+
+.shortcut-tip strong {
+  color: rgb(71, 85, 105);
+}
+
+/* ==========================================================================
+   Workbench Column (Right)
+   ========================================================================== */
+
+.workbench-column {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  animation: fadeIn 0.25s ease-out;
+}
+
+/* Scratchpad Toggle Buttons & Close Button */
+.btn-scratchpad-toggle {
+  background: #ffffff;
+  color: rgb(124, 45, 18);
+  border: 1.5px solid rgb(253, 186, 116);
+  padding: 0.35rem 0.85rem;
+  border-radius: 0.65rem;
+  font-weight: 700;
+  font-size: 0.82rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-scratchpad-toggle:hover {
+  background: rgb(255, 247, 237);
+  border-color: rgb(249, 115, 22);
+  color: rgb(194, 65, 12);
+  transform: translateY(-1px);
+}
+
+.btn-scratchpad-toggle.active {
+  background: rgb(254, 215, 170);
+  border-color: rgb(251, 146, 60);
+  color: rgb(124, 45, 18);
+}
+
+.btn-feed-scratchpad {
+  background: #ffffff;
+  color: rgb(124, 45, 18);
+  border: 1px solid rgb(254, 215, 170);
+  padding: 0.25rem 0.65rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.btn-feed-scratchpad:hover {
+  background: rgb(255, 247, 237);
+  border-color: rgb(251, 146, 60);
+  color: rgb(194, 65, 12);
+}
+
+.btn-feed-scratchpad.active {
+  background: rgb(254, 215, 170);
+  border-color: rgb(251, 146, 60);
+  color: rgb(124, 45, 18);
+}
+
+.tab-close-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: rgb(154, 52, 18);
+  font-size: 1.15rem;
+  font-weight: 700;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-close-btn:hover {
+  color: rgb(239, 68, 68);
+  background: rgba(254, 226, 226, 0.7);
+}
+
+.workbench-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  background-color: #ffffff;
+  border: 1.5px solid rgb(226, 232, 240);
+  box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.05);
+  min-height: 0;
+}
+
+.workbench-tabs {
+  display: flex;
+  background: rgb(255, 247, 237);
+  border-bottom: 1px solid rgb(255, 237, 213);
+}
+
+.tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: rgb(154, 52, 18);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.tab-btn:hover {
+  color: rgb(124, 45, 18);
+  background: rgba(254, 215, 170, 0.2);
+}
+
+.tab-btn.active {
+  color: rgb(124, 45, 18);
+  border-bottom-color: rgb(251, 146, 60);
+  background: rgb(254, 215, 170);
+}
+
+.tab-pane {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.tab-pane.active {
+  display: flex;
+}
+
+/* Editor Toolbar */
+.editor-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid rgb(226, 232, 240);
+  background: rgb(248, 250, 252);
+}
+
+.form-select-sm {
+  background: #ffffff;
+  border: 1px solid rgb(226, 232, 240);
+  color: rgb(15, 23, 42);
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.65rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+}
+
+/* ==========================================================================
+   Comprehensive Button System & Alignments
+   ========================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-body, system-ui, sans-serif);
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.25;
+  padding: 0.55rem 1.15rem;
+  border-radius: 0.75rem;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn:disabled,
+.btn[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Primary Button (Send Response, View Report) */
+.btn-primary {
+  background: linear-gradient(135deg, rgb(251, 146, 60), rgb(234, 88, 12));
+  color: #ffffff !important;
+  border-color: rgb(234, 88, 12);
+  box-shadow: 0 4px 14px rgba(251, 146, 60, 0.35);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, rgb(253, 160, 80), rgb(240, 95, 20));
+  box-shadow: 0 6px 20px rgba(251, 146, 60, 0.45);
+}
+
+/* Secondary Button (End Session, Insert into Chat, History) */
+.btn-secondary {
+  background: #ffffff;
+  color: rgb(15, 23, 42) !important;
+  border-color: rgb(203, 213, 225);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.btn-secondary:hover {
+  background: rgb(248, 250, 252);
+  border-color: rgb(148, 163, 184);
+  color: rgb(2, 132, 199) !important;
+}
+
+/* Danger Button (End & View Report in modal) */
+.btn-danger {
+  background: linear-gradient(135deg, rgb(239, 68, 68), rgb(220, 38, 38));
+  color: #ffffff !important;
+  border-color: rgb(220, 38, 38);
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+}
+
+.btn-danger:hover {
+  background: linear-gradient(135deg, rgb(248, 113, 113), rgb(239, 68, 68));
+  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.4);
+}
+
+/* Ghost Button (Clear, Copy, Reset, Cancel Modal) */
+.btn-ghost {
+  background: transparent;
+  color: rgb(71, 85, 105) !important;
+  border-color: transparent;
+}
+
+.btn-ghost:hover {
+  background: rgb(241, 245, 249);
+  color: rgb(15, 23, 42) !important;
+}
+
+/* Sizes */
+.btn-sm {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  border-radius: 0.55rem;
+}
+
+.btn-lg {
+  padding: 0.85rem 1.75rem;
+  font-size: 1rem;
+  border-radius: 0.85rem;
+}
+
+.editor-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.complete-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.complete-badge {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+.mode-badge-coached {
+  background: rgb(254, 243, 199);
+  color: rgb(146, 64, 14);
+  border: 1px solid rgb(253, 230, 138);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.mode-badge-real {
+  background: rgb(255, 237, 213);
+  color: rgb(194, 65, 12);
+  border: 1px solid rgb(254, 215, 170);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Editor Area */
+.editor-container {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+.code-editor-area {
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: rgb(15, 23, 42);
+  padding: 1rem 1.25rem;
+  tab-size: 4;
+}
+
+.code-editor-area::placeholder {
+  color: rgb(148, 163, 184);
+}
+
+.editor-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid rgb(226, 232, 240);
+  background: rgb(248, 250, 252);
+  font-size: 0.76rem;
+  color: rgb(100, 116, 139);
+}
+
+/* Rubric Panel */
+.rubric-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background-color: #ffffff;
+}
+
+.rubric-header h3 {
+  font-size: 1.15rem;
+  color: rgb(15, 23, 42);
+  margin-bottom: 0.25rem;
+}
+
+.rubric-header p {
+  font-size: 0.85rem;
+  color: rgb(71, 85, 105);
+}
+
+.rubric-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.rubric-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 0.85rem;
+  background: rgb(248, 250, 252);
+  border: 1px solid rgb(226, 232, 240);
+  border-radius: var(--radius-md);
+}
+
+.rubric-icon {
+  font-size: 1.35rem;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.rubric-detail strong {
+  display: block;
+  font-size: 0.9rem;
+  color: rgb(15, 23, 42);
+  margin-bottom: 0.15rem;
+}
+
+.rubric-detail p {
+  font-size: 0.8rem;
+  color: rgb(71, 85, 105);
+  line-height: 1.45;
+}
+
+/* Modals */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1.5rem;
+}
+
+.modal-backdrop.hidden {
+  display: none;
+}
+
+.modal-dialog {
+  max-width: 500px;
+  width: 100%;
+  padding: 2.25rem;
+  border-radius: 1.5rem;
+  background: #ffffff;
+  border: 1.5px solid rgb(254, 215, 170);
+  box-shadow: rgba(251, 146, 60, 0.15) 0px 20px 45px -5px;
+  animation: modal-pop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modal-pop {
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal-header h2 {
+  font-size: 1.35rem;
+  color: rgb(15, 23, 42);
+  margin-bottom: 0.75rem;
+}
+
+.modal-body p {
+  color: rgb(71, 85, 105);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.modal-footer {
+  margin-top: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+  .interview-body {
+    height: auto;
+    overflow-y: auto;
+  }
+  .interview-workspace {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+  .feed-column {
+    height: 600px;
+  }
+  .workbench-column {
+    height: 500px;
+  }
+}

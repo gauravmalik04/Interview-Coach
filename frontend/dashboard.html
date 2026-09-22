@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Dashboard — GAIUS | Adaptive Technical Interview Platform</title>
+  <meta name="description" content="Adaptive technical interview dashboard with real-time AI evaluation, 7-metric rubrics, and vector coaching."/>
+  
+  <!-- Tailwind CSS v3 with Plugins -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script data-purpose="tailwind-config">
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            retro: {
+              sunset: '#ff6b4a',
+              apricot: '#fca369',
+              coral: '#f87171',
+              terracotta: '#e0533c',
+              mustard: '#f59e0b',
+              honey: '#fbbf24',
+              sand: '#fef3c7',
+              turquoise: '#14b8a6',
+              surf: '#06b6d4',
+              seafoam: '#2dd4bf',
+              dusk: '#1a1318',
+              twilight: '#241720',
+              plum: '#2d1c25'
+            }
+          },
+          boxShadow: {
+            'glow-sunset': '0 0 32px -4px rgba(255, 107, 74, 0.45)',
+            'glow-turquoise': '0 0 24px -4px rgba(20, 184, 166, 0.35)',
+            'glow-honey': '0 0 28px -4px rgba(251, 191, 36, 0.4)',
+            'island': '0 16px 40px -6px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 163, 105, 0.1)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Plus Jakarta Sans, Cinzel, Syne, Inter -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+
+  <link rel="stylesheet" href="/static/css/main.css"/>
+  <link rel="stylesheet" href="/static/css/dashboard.css?v=20260922_radio"/>
+</head>
+<body class="min-h-screen relative antialiased flex flex-col justify-between" style="background-color: rgb(250, 247, 242); color: rgb(15, 23, 42);">
+
+  <!-- BEGIN: Floating Glassmorphic Top Navigation -->
+  <header class="fixed top-5 inset-x-0 z-50 flex justify-center px-4 pointer-events-none anim-nav-drop">
+    <div class="pointer-events-auto flex items-center justify-between gap-6 px-6 py-2.5 rounded-full shadow-md max-w-5xl w-full transition-all duration-300 hover:shadow-lg" style="background-color: rgb(255, 255, 255); border: 1.5px solid rgb(254, 215, 170); box-shadow: rgba(251, 146, 60, 0.12) 0px 4px 20px -2px;">
+      
+      <!-- Brand Logo -->
+      <a class="flex items-center group py-0.5 transition-transform duration-200 active:scale-95" href="/dashboard">
+        <span class="font-brand font-black text-xl uppercase tracking-widest transition-transform group-hover:scale-105" style="color: rgb(251, 113, 133);">GAIUS</span>
+      </a>
+
+      <!-- Pill Nav Tabs -->
+      <nav class="hidden md:flex items-center gap-1 text-sm font-medium p-1 rounded-full" style="background-color: rgb(255, 247, 237); border: 1px solid rgb(255, 237, 213);">
+        <a class="px-4 py-1.5 rounded-full font-semibold text-xs transition-all duration-200 shadow-sm active:scale-95" href="/dashboard" style="background-color: rgb(254, 215, 170); color: rgb(124, 45, 18); border: 1px solid rgb(253, 186, 116);">Dashboard</a>
+        <a class="px-3.5 py-1.5 rounded-full text-xs transition-all duration-200 hover:-translate-y-0.5 active:scale-95" href="/interview" onclick="handleNavInterviewClick(event)" style="color: rgb(154, 52, 18);">Interview</a>
+        <a class="px-3.5 py-1.5 rounded-full text-xs transition-all duration-200 hover:-translate-y-0.5 active:scale-95" href="/history" style="color: rgb(154, 52, 18);">History</a>
+        <a class="px-3.5 py-1.5 rounded-full text-xs transition-all duration-200 hover:-translate-y-0.5 active:scale-95" href="/coach" style="color: rgb(154, 52, 18);">AI Mentor</a>
+      </nav>
+
+      <!-- User Profile & Sign Out -->
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 px-2 py-1 rounded-full hover:bg-slate-50 transition-colors duration-200 cursor-pointer">
+          <div id="user-avatar-initials" class="w-7 h-7 rounded-full flex items-center justify-center font-extrabold text-[11px] ring-2 ring-orange-400 transition-transform duration-200 hover:scale-110" style="background-color: rgb(253, 186, 116); color: rgb(67, 20, 7);">GM</div>
+          <span id="user-full-name" class="text-xs font-semibold hidden sm:inline-block select-none" style="color: rgb(30, 41, 59);">Candidate</span>
+        </div>
+        <button onclick="logout()" class="px-3 py-1 text-xs font-medium rounded-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm active:scale-95 cursor-pointer" style="background-color: rgb(241, 245, 249); color: rgb(71, 85, 105); border: 1px solid rgb(203, 213, 225);" type="button">Sign Out</button>
+      </div>
+    </div>
+  </header>
+  <!-- END: Floating Navigation -->
+
+  <!-- BEGIN: Main Content Container -->
+  <main class="relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-8 space-y-8 flex-1">
+    
+    <!-- Hero Welcome Section -->
+    <section class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2 anim-hero-up" data-purpose="hero-header">
+      <div class="space-y-2">
+        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight" style="color: rgb(15, 23, 42);">
+          Welcome, <span id="welcome-name">Candidate</span> <span class="inline-block hand-wave-initial hand-wave-hover origin-[70%_70%] cursor-default">👋</span>
+        </h1>
+        <p class="text-sm sm:text-base max-w-2xl leading-relaxed" style="color: rgb(71, 85, 105);">
+          Select a technical domain to launch a live adaptive interview, or analyze your multi-dimensional scorecard trends.
+        </p>
+      </div>
+    </section>
+    <!-- END: Hero Welcome Section -->
+
+    <!-- Bento Grid (7 cols left, 5 cols right) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- LEFT COLUMN: Live Interview Island (7 cols) -->
+      <div class="lg:col-span-7 space-y-6">
+        <section class="relative rounded-3xl p-6 sm:p-8 shadow-xl overflow-hidden anim-island group transition-all duration-300 hover:shadow-2xl" data-purpose="primary-launch-island" style="background-color: rgb(255, 255, 255); border: 1.5px solid rgb(254, 215, 170); box-shadow: rgba(251, 146, 60, 0.12) 0px 16px 40px -6px;">
+          
+          <!-- Subtle Peach Accent Glow -->
+          <div class="absolute -top-24 -right-24 w-72 h-72 rounded-full blur-3xl pointer-events-none transition-all duration-500 group-hover:scale-110" style="background-color: rgba(254, 215, 170, 0.35);"></div>
+          
+          <div class="relative z-10 space-y-6">
+            
+            <!-- Island Top Header -->
+            <div class="space-y-2">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider" style="background-color: rgb(254, 243, 199); color: rgb(146, 64, 14); border: 1px solid rgb(253, 230, 138);">
+                <span class="w-2 h-2 rounded-full status-ping-dot inline-block" style="background-color: rgb(245, 158, 11);"></span>
+                <span>Adaptive Assessment Room</span>
+              </div>
+              
+              <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight" style="color: rgb(15, 23, 42);">
+                Launch Technical <span style="color: rgb(234, 88, 12);">Interview</span>
+              </h2>
+              
+              <p class="text-sm leading-relaxed" style="color: rgb(71, 85, 105);">
+                Experience real-time AI interviewing across algorithmic logic, edge cases, and Big-O derivation.
+              </p>
+            </div>
+
+            <!-- Domain Select Form Group -->
+            <div class="space-y-3 pt-2">
+              <label class="block text-xs font-bold uppercase tracking-wider" for="domain-select" style="color: rgb(3, 105, 161);">SELECT TECHNICAL DOMAIN</label>
+              <div class="relative select-wrapper group">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-transform duration-200 group-hover:scale-110" style="color: rgb(2, 132, 199);">
+                  <svg class="w-5 h-5 drop-shadow-[0_0_6px_rgba(20,184,166,0.4)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                  </svg>
+                </div>
+                
+                <select class="w-full text-sm font-medium rounded-xl pl-11 pr-10 py-3.5 appearance-none cursor-pointer transition-all duration-200 outline-none hover:border-sky-400 focus:border-sky-500" id="domain-select" style="background-color: rgb(255, 255, 255); border: 1.5px solid rgb(186, 230, 253); color: rgb(15, 23, 42);">
+                  <option value="Arrays & Hashing" selected>Arrays & Hashing</option>
+                  <option value="Two Pointers & Sliding Window">Two Pointers & Sliding Window</option>
+                  <option value="Binary Search">Binary Search</option>
+                  <option value="Linked Lists">Linked Lists</option>
+                  <option value="Stacks & Queues">Stacks & Queues</option>
+                  <option value="Binary Trees & BST">Binary Trees & BST</option>
+                  <option value="Graphs">Graphs</option>
+                  <option value="Dynamic Programming">Dynamic Programming</option>
+                  <option value="Recursion & Backtracking">Recursion & Backtracking</option>
+                  <option value="Heaps & Priority Queues">Heaps & Priority Queues</option>
+                  <option value="Greedy Algorithms">Greedy Algorithms</option>
+                  <option value="Tries">Tries</option>
+                  <option value="System Design">System Design (High Availability & Microservices)</option>
+                  <option value="Concurrency & OS Internals">Concurrency, Threading & OS Internals</option>
+                  <option value="General">General Technical Interview</option>
+                </select>
+
+                <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none select-arrow transition-transform duration-200" style="color: rgb(2, 132, 199);">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Interview Format / Mode Selection -->
+            <div class="space-y-3 pt-1">
+              <label class="block text-xs font-bold uppercase tracking-wider" style="color: rgb(3, 105, 161);">INTERVIEW FORMAT & COACHING</label>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="mode-selector-group">
+                <!-- Coached Interview Card -->
+                <button type="button" 
+                        class="mode-card relative text-left p-3.5 rounded-2xl border-2 transition-all duration-200 cursor-pointer hover:-translate-y-0.5"
+                        id="mode-btn-coached"
+                        onclick="selectInterviewMode('coached')"
+                        style="background-color: rgb(255, 255, 255); border-color: rgb(226, 232, 240); color: rgb(15, 23, 42);">
+                  <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-xl flex items-center justify-center text-base shrink-0" style="background-color: rgb(254, 243, 199); color: rgb(146, 64, 14);">
+                      🎓
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-bold flex items-center gap-1.5">
+                        Coached Interview
+                        <span class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase" style="background-color: rgb(254, 243, 199); color: rgb(180, 83, 9);">Guided</span>
+                      </div>
+                      <p class="text-xs mt-1 leading-snug" style="color: rgb(100, 116, 139);">
+                        Live expectation hints, answer talking-points & optimal complexity guidance.
+                      </p>
+                    </div>
+                  </div>
+                </button>
+
+                <!-- Real Interview Card -->
+                <button type="button" 
+                        class="mode-card active relative text-left p-3.5 rounded-2xl border-2 transition-all duration-200 cursor-pointer hover:-translate-y-0.5"
+                        id="mode-btn-real"
+                        onclick="selectInterviewMode('real')"
+                        style="background-color: rgb(255, 247, 237); border-color: rgb(249, 115, 22); color: rgb(15, 23, 42); box-shadow: rgba(249, 115, 22, 0.15) 0px 4px 12px;">
+                  <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-xl flex items-center justify-center text-base shrink-0" style="background-color: rgb(255, 237, 213); color: rgb(194, 65, 12);">
+                      ⚡
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-bold flex items-center gap-1.5">
+                        Real Interview
+                        <span class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase" style="background-color: rgb(255, 237, 213); color: rgb(194, 65, 12);">Simulation</span>
+                      </div>
+                      <p class="text-xs mt-1 leading-snug" style="color: rgb(100, 116, 139);">
+                        Zero hints or in-session coaching. Questions only; complete feedback in report.
+                      </p>
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Preferred Coding Language Selection (Radio Buttons) -->
+            <div class="space-y-3 pt-1">
+              <div class="flex items-center justify-between">
+                <label class="block text-xs font-bold uppercase tracking-wider" style="color: rgb(3, 105, 161);">PREFERRED CODING LANGUAGE</label>
+                <span class="text-[11px] font-semibold" style="color: rgb(100, 116, 139);">Pre-populates scratchpad boilerplate</span>
+              </div>
+              
+              <!-- Hidden input keeping language-select ID for seamless backwards compatibility -->
+              <input type="hidden" id="language-select" value="python">
+
+              <!-- Clickable Language Radio Cards Grid (Max 3 in a row) -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3" id="language-radio-group">
+                <!-- Python (Default Selected) -->
+                <label class="lang-radio-card active" id="card-lang-python" for="lang-radio-python">
+                  <input type="radio" 
+                         name="preferred_language" 
+                         id="lang-radio-python" 
+                         value="python" 
+                         class="lang-radio-input"
+                         checked
+                         onchange="handleLanguageRadioChange('python')">
+                  <span class="text-xl shrink-0 select-none">🐍</span>
+                  <div class="min-w-0">
+                    <div class="text-xs font-bold text-slate-900 leading-tight">Python</div>
+                    <div class="text-[10px] text-slate-500 font-medium">Python 3</div>
+                  </div>
+                </label>
+
+                <!-- JavaScript -->
+                <label class="lang-radio-card" id="card-lang-javascript" for="lang-radio-javascript">
+                  <input type="radio" 
+                         name="preferred_language" 
+                         id="lang-radio-javascript" 
+                         value="javascript" 
+                         class="lang-radio-input"
+                         onchange="handleLanguageRadioChange('javascript')">
+                  <span class="text-xl shrink-0 select-none">🟨</span>
+                  <div class="min-w-0">
+                    <div class="text-xs font-bold text-slate-900 leading-tight">JavaScript</div>
+                    <div class="text-[10px] text-slate-500 font-medium">Node.js</div>
+                  </div>
+                </label>
+
+                <!-- Java -->
+                <label class="lang-radio-card" id="card-lang-java" for="lang-radio-java">
+                  <input type="radio" 
+                         name="preferred_language" 
+                         id="lang-radio-java" 
+                         value="java" 
+                         class="lang-radio-input"
+                         onchange="handleLanguageRadioChange('java')">
+                  <span class="text-xl shrink-0 select-none">☕</span>
+                  <div class="min-w-0">
+                    <div class="text-xs font-bold text-slate-900 leading-tight">Java</div>
+                    <div class="text-[10px] text-slate-500 font-medium">OpenJDK</div>
+                  </div>
+                </label>
+
+                <!-- C++ -->
+                <label class="lang-radio-card" id="card-lang-cpp" for="lang-radio-cpp">
+                  <input type="radio" 
+                         name="preferred_language" 
+                         id="lang-radio-cpp" 
+                         value="cpp" 
+                         class="lang-radio-input"
+                         onchange="handleLanguageRadioChange('cpp')">
+                  <span class="text-xl shrink-0 select-none">⚡</span>
+                  <div class="min-w-0">
+                    <div class="text-xs font-bold text-slate-900 leading-tight">C++</div>
+                    <div class="text-[10px] text-slate-500 font-medium">GCC / Clang</div>
+                  </div>
+                </label>
+
+                <!-- Go -->
+                <label class="lang-radio-card" id="card-lang-go" for="lang-radio-go">
+                  <input type="radio" 
+                         name="preferred_language" 
+                         id="lang-radio-go" 
+                         value="go" 
+                         class="lang-radio-input"
+                         onchange="handleLanguageRadioChange('go')">
+                  <span class="text-xl shrink-0 select-none">🔷</span>
+                  <div class="min-w-0">
+                    <div class="text-xs font-bold text-slate-900 leading-tight">Go</div>
+                    <div class="text-[10px] text-slate-500 font-medium">Golang</div>
+                  </div>
+                </label>
+              </div>
+
+              <!-- Inline language radio controller -->
+              <script>
+                function handleLanguageRadioChange(lang) {
+                  window.selectedCodingLanguage = lang;
+                  var hiddenInput = document.getElementById('language-select');
+                  if (hiddenInput) hiddenInput.value = lang;
+
+                  var cards = document.querySelectorAll('.lang-radio-card');
+                  cards.forEach(function(card) {
+                    var r = card.querySelector('input[type="radio"]');
+                    if (r && r.checked) {
+                      card.classList.add('active');
+                      card.style.backgroundColor = 'rgb(255, 247, 237)';
+                      card.style.borderColor = 'rgb(249, 115, 22)';
+                      card.style.boxShadow = 'rgba(249, 115, 22, 0.15) 0px 4px 12px';
+                    } else {
+                      card.classList.remove('active');
+                      card.style.backgroundColor = 'rgb(255, 255, 255)';
+                      card.style.borderColor = 'rgb(226, 232, 240)';
+                      card.style.boxShadow = 'none';
+                    }
+                  });
+                }
+                window.handleLanguageRadioChange = handleLanguageRadioChange;
+                window.selectedCodingLanguage = 'python';
+
+                function selectCodingLanguage(lang) {
+                  var radio = document.getElementById('lang-radio-' + lang);
+                  if (radio) {
+                    radio.checked = true;
+                    handleLanguageRadioChange(lang);
+                  }
+                }
+                window.selectCodingLanguage = selectCodingLanguage;
+              </script>
+            </div>
+
+            <!-- Launch Button -->
+            <div class="pt-2">
+              <button class="w-full relative group inline-flex items-center justify-center gap-2 px-6 py-4 text-base font-extrabold rounded-xl transition-all duration-200 transform hover:-translate-y-0.5 active:scale-[0.98] whitespace-nowrap cursor-pointer shadow-md" id="launch-interview-btn" onclick="startInterview(event)" style="background-color: rgb(251, 146, 60); color: rgb(255, 255, 255); border: none; box-shadow: rgba(251, 146, 60, 0.4) 0px 4px 14px;" type="button">
+                <span class="inline-flex items-center gap-2">
+                  <span id="launch-btn-text">Launch Interview</span>
+                  <span class="inline-block transition-transform duration-200 group-hover:translate-x-1.5 font-sans">→</span>
+                </span>
+              </button>
+            </div>
+
+            <!-- Quick Presets -->
+            <div class="pt-4 flex flex-wrap items-center gap-2 text-xs" style="border-top: 1px solid rgb(254, 215, 170);">
+              <span class="font-medium" style="color: rgb(71, 85, 105);">Quick preset:</span>
+              <button class="preset-pill px-2.5 py-1.5 rounded-lg font-medium transition-all duration-200 hover:-translate-y-0.5 hover:scale-105 active:scale-95 cursor-pointer" data-preset="General" style="background-color: rgb(252, 231, 243); border: 1px solid rgb(251, 207, 232); color: rgb(157, 23, 77);" type="button">
+                ⚡ General
+              </button>
+              <button class="preset-pill px-2.5 py-1.5 rounded-lg font-medium transition-all duration-200 hover:-translate-y-0.5 hover:scale-105 active:scale-95 cursor-pointer" data-preset="Dynamic Programming" style="background-color: rgb(237, 233, 254); border: 1px solid rgb(221, 214, 254); color: rgb(91, 33, 182);" type="button">
+                🧩 Dynamic Programming
+              </button>
+              <button class="preset-pill px-2.5 py-1.5 rounded-lg font-medium transition-all duration-200 hover:-translate-y-0.5 hover:scale-105 active:scale-95 cursor-pointer" data-preset="Graphs" style="background-color: rgb(224, 242, 254); border: 1px solid rgb(186, 230, 253); color: rgb(7, 89, 133);" type="button">
+                🌐 Graphs
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- RIGHT COLUMN: 4 Key Metrics Grid & Recent Session Snapshot (5 cols) -->
+      <div class="lg:col-span-5 space-y-6">
+        
+        <!-- Key Metrics Stack: 4 Balanced Cards Stacked Vertically -->
+        <section class="flex flex-col gap-3.5" data-purpose="metrics-summary">
+          
+          <!-- Metric 1: Retro Terracotta / Coral Rose Sun -->
+          <div class="rounded-3xl p-4 sm:p-5 relative overflow-hidden shadow-md group transition-all duration-300 hover:-translate-y-1 hover:shadow-lg anim-metric-1 cursor-default" style="background-color: rgb(252, 231, 243); border: 1.5px solid rgb(251, 207, 232);">
+            <div class="flex items-center gap-3.5">
+              <div class="w-11 h-11 p-2.5 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-sm" style="background-color: #F472B6; color: #FFFFFF; border: 1px solid #FB7185;">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="9" stroke-width="2"></circle>
+                  <circle cx="12" cy="12" r="5" stroke-width="2"></circle>
+                  <circle cx="12" cy="12" fill="currentColor" r="1.5" stroke-width="2"></circle>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="text-2xl font-bold tracking-tight leading-none transition-transform duration-200 group-hover:translate-x-0.5" id="stat-interviews-count" style="color: #831843;">0</div>
+                <div class="text-[10px] font-bold mt-1.5 uppercase tracking-wider truncate" id="stat-interviews-label" style="color: #9D174D;">0 COMPLETED</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Metric 2: Vintage Surf / Seafoam Violet -->
+          <div class="rounded-3xl p-4 sm:p-5 relative overflow-hidden shadow-md group transition-all duration-300 hover:-translate-y-1 hover:shadow-lg anim-metric-2 cursor-default" style="background-color: rgb(237, 233, 254); border: 1.5px solid rgb(221, 214, 254);">
+            <div class="flex items-center gap-3.5">
+              <div class="w-11 h-11 p-2.5 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-sm" style="background-color: #A78BFA; color: #FFFFFF; border: 1px solid #8B5CF6;">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-baseline gap-1 leading-none transition-transform duration-200 group-hover:translate-x-0.5">
+                  <span class="text-2xl font-bold tracking-tight" id="stat-avg-score" style="color: #4C1D95;">—</span>
+                  <span class="text-xs font-bold" style="color: #6D28D9;">/ 4.0</span>
+                </div>
+                <div class="text-[10px] font-bold mt-1.5 uppercase tracking-wider truncate" style="color: #6D28D9;">AVERAGE SCORE</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Metric 3: Star Metric (Strongest Dimension) -->
+          <div class="rounded-3xl p-4 sm:p-5 relative overflow-hidden shadow-md group transition-all duration-300 hover:-translate-y-1 hover:shadow-lg anim-metric-3 cursor-default" style="background-color: rgb(224, 242, 254); border: 1.5px solid rgb(186, 230, 253);">
+            <div class="flex items-center gap-3.5">
+              <div class="w-11 h-11 p-2.5 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-sm" style="background-color: #38BDF8; color: #FFFFFF; border: 1px solid #0EA5E9;">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-baseline gap-1 leading-none transition-transform duration-200 group-hover:translate-x-0.5">
+                  <span class="text-xl font-extrabold tracking-tight truncate" id="stat-star-metric-name" style="color: #0369A1;">Active</span>
+                  <span class="text-xs font-bold shrink-0" id="stat-star-metric-score" style="color: #0284C7;"></span>
+                </div>
+                <div class="text-[10px] font-bold mt-1.5 uppercase tracking-wider truncate" style="color: #0284C7;">⭐ STAR METRIC (BEST)</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Metric 4: Poorest Metric (Target Growth Area) -->
+          <div class="rounded-3xl p-4 sm:p-5 relative overflow-hidden shadow-md group transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-default" style="background-color: rgb(254, 243, 199); border: 1.5px solid rgb(253, 230, 138);">
+            <div class="flex items-center gap-3.5">
+              <div class="w-11 h-11 p-2.5 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-sm" style="background-color: #F59E0B; color: #FFFFFF; border: 1px solid #D97706;">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-baseline gap-1 leading-none transition-transform duration-200 group-hover:translate-x-0.5">
+                  <span class="text-xl font-extrabold tracking-tight truncate" id="stat-poorest-metric-name" style="color: #92400E;">Pending</span>
+                  <span class="text-xs font-bold shrink-0" id="stat-poorest-metric-score" style="color: #B45309;"></span>
+                </div>
+                <div class="text-[10px] font-bold mt-1.5 uppercase tracking-wider truncate" style="color: #B45309;">🎯 POOREST METRIC (GROWTH)</div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+        <!-- END: Key Metrics Stack -->
+
+        <!-- Recent Session Snapshot & Link to Full History -->
+        <section class="space-y-3 pt-1 anim-history" data-purpose="history-island">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-bold tracking-tight flex items-center gap-2" style="color: rgb(15, 23, 42);">Latest Interview</h3>
+            <a href="/history" class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full transition-transform duration-200 hover:scale-105" style="background-color: rgb(254, 215, 170); color: rgb(154, 52, 18); border: 1px solid rgb(253, 186, 116); text-decoration: none;">
+              <span>View All in History</span>
+              <span>→</span>
+            </a>
+          </div>
+
+          <div class="rounded-3xl p-5 shadow-md space-y-4 transition-all duration-300 hover:shadow-lg" id="sessions-container" style="background-color: rgb(255, 255, 255); border: 1.5px solid rgb(226, 232, 240);">
+            <!-- Injected via JavaScript: single most recent session -->
+            <div class="p-6 text-center text-sm" style="color: rgb(100, 116, 139);">
+              <p>No interviews completed yet. Choose a domain above to start your first session!</p>
+            </div>
+          </div>
+        </section>
+        <!-- END: Recent Activity Section -->
+
+      </div>
+    </div>
+    <!-- END: Bento Grid -->
+
+  </main>
+  <!-- END: Main Content -->
+
+  <!-- BEGIN: Editorial Footer -->
+  <footer class="mt-16 border-t py-8 relative z-10 text-xs text-center transition-colors" style="background-color: rgb(250, 247, 242); border-top: 1px solid rgb(226, 232, 240); color: rgb(100, 116, 139);">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full status-ping-dot inline-block" style="background-color: rgb(251, 113, 133); box-shadow: none;"></span>
+        <span>Systems operational • Gaius Enterprise v2.4</span>
+      </div>
+      <div class="flex items-center gap-6">
+        <a class="hover:text-amber-700 transition-colors duration-200" href="#">Privacy Policy</a>
+        <a class="hover:text-amber-700 transition-colors duration-200" href="#">Evaluation Rubrics</a>
+        <a class="hover:text-amber-700 transition-colors duration-200" href="#">Documentation</a>
+      </div>
+    </div>
+  </footer>
+  <!-- END: Editorial Footer -->
+
+  <div id="toast-container"></div>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/dashboard.js?v=20260922_radio"></script>
+</body>
+</html>

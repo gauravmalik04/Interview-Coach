@@ -1,0 +1,192 @@
+/* ==========================================================================
+   AUTH & LANDING HERO STYLES — THE AMBER EDITORIAL
+   Warm Paper Canvas, Editorial Typography, Radiant Auth Card
+   ========================================================================== */
+
+.hero-container {
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr;
+  gap: 3.5rem;
+  align-items: center;
+  min-height: calc(100vh - 100px);
+  padding-top: 6rem;
+  padding-bottom: 3rem;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+@media (max-width: 960px) {
+  .hero-container {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    padding-top: 6rem;
+  }
+}
+
+.hero-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: rgb(254, 215, 170);
+  color: rgb(154, 52, 18);
+  border: 1px solid rgb(253, 186, 116);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.hero-title {
+  font-size: 3.25rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 1.25rem 0 1.25rem 0;
+  line-height: 1.15;
+  color: rgb(15, 23, 42);
+}
+
+@media (max-width: 640px) {
+  .hero-title {
+    font-size: 2.35rem;
+  }
+}
+
+.text-amber-editorial {
+  color: rgb(234, 88, 12);
+  display: inline-block;
+}
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  color: rgb(71, 85, 105);
+  line-height: 1.7;
+  max-width: 580px;
+  margin-bottom: 2.5rem;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgb(226, 232, 240);
+}
+
+.stat-number {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 800;
+  color: rgb(15, 23, 42);
+  line-height: 1.1;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: rgb(100, 116, 139);
+  font-weight: 600;
+  margin-top: 0.35rem;
+}
+
+/* ==========================================================================
+   Auth Card & Form Styles
+   ========================================================================== */
+
+.auth-card-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 2.25rem;
+  border-radius: 1.75rem;
+  background-color: #ffffff;
+  border: 1.5px solid rgb(254, 215, 170);
+  box-shadow: rgba(251, 146, 60, 0.15) 0px 16px 40px -6px, 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: all var(--transition-normal);
+}
+
+.auth-card:hover {
+  box-shadow: rgba(251, 146, 60, 0.22) 0px 20px 48px -6px;
+}
+
+.auth-tabs {
+  display: flex;
+  background-color: rgb(255, 247, 237);
+  padding: 0.3rem;
+  border-radius: 9999px;
+  margin-bottom: 1.75rem;
+  border: 1px solid rgb(255, 237, 213);
+}
+
+.auth-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: rgb(154, 52, 18);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 0.6rem 1rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.auth-tab.active {
+  background-color: rgb(254, 215, 170);
+  color: rgb(124, 45, 18);
+  border: 1px solid rgb(253, 186, 116);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-form.hidden {
+  display: none;
+}
+
+.btn-block {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.85rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 800;
+  border-radius: 0.75rem;
+  background-color: rgb(251, 146, 60);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 14px rgba(251, 146, 60, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all var(--transition-fast);
+}
+
+.btn-block:hover {
+  background-color: rgb(249, 115, 22);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(251, 146, 60, 0.5);
+}
+
+.btn-block:active {
+  transform: scale(0.98);
+}
+
+.btn-block .arrow {
+  transition: transform var(--transition-fast);
+}
+
+.btn-block:hover .arrow {
+  transform: translateX(4px);
+}

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interview History — GAIUS</title>
+  <meta name="description" content="View and manage all your historical technical interview sessions, transcripts, and evaluation scorecards.">
+  
+  <!-- Google Fonts: Cinzel, Plus Jakarta Sans -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+  
+  <link rel="stylesheet" href="/static/css/main.css">
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+  <link rel="stylesheet" href="/static/css/history.css">
+</head>
+<body style="background-color: rgb(250, 247, 242); color: rgb(15, 23, 42); min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between;">
+
+  <!-- BEGIN: Floating Glassmorphic Top Navigation -->
+  <header class="floating-nav-header anim-nav-drop">
+    <div class="floating-nav-pill">
+      <!-- Brand Logo -->
+      <a class="nav-brand-link" href="/dashboard">
+        <span class="nav-brand-title">GAIUS</span>
+      </a>
+
+      <!-- Pill Nav Tabs -->
+      <div class="nav-menu-pills">
+        <a class="nav-menu-link" href="/dashboard">Dashboard</a>
+        <a class="nav-menu-link" href="/interview" onclick="handleNavInterviewClick(event)">Interview</a>
+        <a class="nav-menu-link active" href="/history">History</a>
+        <a class="nav-menu-link" href="/coach">AI Mentor</a>
+      </div>
+
+      <!-- User Profile & Sign Out -->
+      <div class="nav-user-area">
+        <div style="display: flex; items-center; gap: 0.5rem;">
+          <div id="user-avatar-initials" style="width: 28px; height: 28px; border-radius: 50%; background-color: rgb(253, 186, 116); color: rgb(67, 20, 7); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; border: 1.5px solid rgb(251, 146, 60);">GM</div>
+          <span id="user-full-name" style="font-size: 0.82rem; font-weight: 700; color: rgb(30, 41, 59); display: none;">Candidate</span>
+        </div>
+        <button onclick="logout()" class="btn-signout" type="button">Sign Out</button>
+      </div>
+    </div>
+  </header>
+  <!-- END: Floating Navigation -->
+
+  <!-- BEGIN: Main Content Container -->
+  <main style="max-width: 76rem; width: 100%; margin: 0 auto; padding: 6.5rem 1.5rem 3rem 1.5rem; flex: 1;" class="anim-hero-up">
+
+    <!-- Header Island -->
+    <div class="history-header-island">
+      <div class="history-title-group">
+        <h1>Interview <span style="color: rgb(234, 88, 12);">History</span></h1>
+        <p>Review past interview sessions, analyze scorecard breakdowns, or generate pending evaluations.</p>
+      </div>
+
+      <div class="history-stats-pill-group">
+        <div class="history-summary-badge" id="badge-total-sessions">
+          <span>📚</span>
+          <span id="text-total-sessions">0 Total Sessions</span>
+        </div>
+        <div class="history-summary-badge" id="badge-completed-sessions" style="background-color: rgb(240, 253, 244); border-color: rgb(187, 247, 208); color: rgb(22, 101, 52);">
+          <span>✓</span>
+          <span id="text-completed-sessions">0 Completed</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toolbar: Filter Pills & Search Input -->
+    <div class="history-toolbar">
+      <div class="filter-pills-wrap">
+        <button class="filter-pill-btn active" data-filter="all" onclick="setFilter('all')">All Sessions</button>
+        <button class="filter-pill-btn" data-filter="completed" onclick="setFilter('completed')">Completed</button>
+        <button class="filter-pill-btn" data-filter="in-progress" onclick="setFilter('in-progress')">In Progress</button>
+      </div>
+
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="history-search-input" placeholder="Search by topic or category..." oninput="handleSearch(this.value)">
+      </div>
+    </div>
+
+    <!-- History Sessions Container (Injected by history.js) -->
+    <div id="history-sessions-container" class="history-cards-container">
+      <div class="empty-history-box">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem; animation: softPulseDot 1.5s infinite;">⏳</div>
+        <h3 style="font-size: 1.25rem; font-weight: 800;">Retrieving Session Archives...</h3>
+        <p style="color: rgb(100, 116, 139); margin-top: 0.35rem;">Fetching interview transcripts and verified evaluation reports.</p>
+      </div>
+    </div>
+
+  </main>
+  <!-- END: Main Content Container -->
+
+  <!-- BEGIN: Editorial Footer -->
+  <footer class="editorial-footer">
+    <div class="editorial-footer-inner">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span class="status-ping-dot" style="width: 8px; height: 8px; border-radius: 50%; background-color: rgb(251, 113, 133); display: inline-block;"></span>
+        <span>Systems operational • Gaius Enterprise v2.4</span>
+      </div>
+      <div class="editorial-footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Evaluation Rubrics</a>
+        <a href="#">Documentation</a>
+      </div>
+    </div>
+  </footer>
+  <!-- END: Editorial Footer -->
+
+  <div id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/history.js"></script>
+</body>
+</html>

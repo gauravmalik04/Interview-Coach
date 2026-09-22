@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Technical Interview — GAIUS</title>
+  <meta name="description" content="Engage in a live, adaptive technical interview with AI evaluating your architecture, algorithmic depth, and communication skills in real-time.">
+  <link rel="stylesheet" href="/static/css/main.css">
+  <link rel="stylesheet" href="/static/css/interview.css">
+</head>
+<body class="interview-body">
+  <!-- Top Navigation Bar -->
+  <nav class="navbar interview-navbar">
+    <div class="container navbar-inner">
+      <div class="nav-left">
+        <a href="/dashboard" class="brand-logo" title="Back to Dashboard">
+          <span class="brand-name">GAIUS</span>
+        </a>
+        <div class="divider-v"></div>
+        <div class="session-meta">
+          <span class="session-topic-badge" id="interview-topic-badge">Arrays & Hashing</span>
+          <span class="mode-badge-real" id="interview-mode-badge">⚡ Real Interview</span>
+          <div class="phase-indicator" id="phase-indicator">
+            <span class="pulse-indicator"></span>
+            <span id="phase-label">Introduction</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-right">
+        <!-- Live Session Timer -->
+        <div class="timer-box" id="timer-box" title="Elapsed interview time">
+          <span class="timer-icon">⏱️</span>
+          <span class="timer-text" id="timer-display">00:00</span>
+        </div>
+
+        <!-- Connection Status -->
+        <div class="connection-pill" id="connection-status">
+          <span class="conn-dot"></span>
+          <span id="connection-text">Connecting...</span>
+        </div>
+
+        <!-- Scratchpad Toggle Button -->
+        <button type="button" class="btn btn-scratchpad-toggle btn-sm" id="btn-toggle-scratchpad" onclick="toggleScratchpad()" title="Open Code & Design Scratchpad">
+          <span>💻 Open Scratchpad</span>
+        </button>
+
+        <!-- End Session Button -->
+        <button type="button" class="btn btn-secondary btn-sm" id="btn-end-session" onclick="openEndModal()">
+          <span>End Session</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Split-Screen Workspace (Default: Scratchpad Collapsed) -->
+  <main class="interview-workspace container scratchpad-collapsed" id="interview-workspace">
+    <!-- Left Column: Conversational Interview Feed -->
+    <section class="feed-column" aria-label="Interview Dialogue">
+      <div class="feed-header">
+        <div class="interviewer-info">
+          <div class="avatar ai-avatar-glow">🤖</div>
+          <div>
+            <h1 class="interviewer-name">AI Technical Interviewer</h1>
+            <p class="interviewer-sub" id="session-sub-status">Adaptive Technical Assessment • Real-time Evaluation</p>
+          </div>
+        </div>
+        <div class="feed-actions">
+          <!-- <button type="button" class="btn btn-feed-scratchpad btn-sm" id="btn-feed-scratchpad" onclick="toggleScratchpad()" title="Open Code & Design Scratchpad">
+            <span>💻 Scratchpad</span>
+          </button> -->
+          <button type="button" class="icon-btn" id="btn-scroll-bottom" title="Scroll to bottom" onclick="scrollToBottom()">
+            ↓
+          </button>
+        </div>
+      </div>
+
+      <!-- Messages Stream -->
+      <div class="messages-container" id="chat-messages" role="log" aria-live="polite">
+        <!-- Initial messages rendered via JS -->
+      </div>
+
+      <!-- AI Typing Indicator -->
+      <div class="typing-container hidden" id="ai-typing-indicator" aria-hidden="true">
+        <div class="avatar ai-avatar-small">🤖</div>
+        <div class="typing-bubble">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="typing-label">Interviewer is formulating response...</span>
+        </div>
+      </div>
+
+      <!-- Response Composer -->
+      <div class="composer-container">
+        <form id="reply-form" onsubmit="submitReply(event)">
+          <div class="input-wrapper">
+            <label for="candidate-input" class="sr-only">Your Interview Response</label>
+            <textarea
+              id="candidate-input"
+              class="composer-textarea"
+              placeholder="Structure your answer, explain time/space complexities, or clarify assumptions... (Press Ctrl+Enter to submit)"
+              rows="3"
+              required
+            ></textarea>
+          </div>
+
+          <div class="composer-toolbar">
+            <div class="toolbar-left">
+              <label class="checkbox-label" title="Attach contents of the right scratchpad to this message">
+                <input type="checkbox" id="check-attach-code">
+                <span>Attach Code Scratchpad</span>
+              </label>
+              <span class="shortcut-tip">Tip: <strong>Ctrl + Enter</strong> to submit</span>
+            </div>
+
+            <div class="toolbar-right">
+              <button type="submit" class="btn btn-primary" id="btn-submit-reply">
+                <span>Send Response</span>
+                <span class="arrow">→</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Right Column: Interactive Workbench (Default: Collapsed) -->
+    <aside class="workbench-column hidden" id="workbench-column" aria-label="Candidate Workbench">
+      <div class="workbench-card glass-card">
+        <!-- Tabs Header -->
+        <div class="workbench-tabs">
+          <button type="button" class="tab-btn active" id="tab-code-btn" onclick="switchTab('code')">
+            💻 Code & Design Scratchpad
+          </button>
+          <button type="button" class="tab-btn" id="tab-rubric-btn" onclick="switchTab('rubric')">
+            📋 Evaluation Rubric
+          </button>
+          <button type="button" class="tab-close-btn" id="btn-close-scratchpad" onclick="toggleScratchpad(false)" title="Collapse Scratchpad">
+            ✕
+          </button>
+        </div>
+
+        <!-- Tab 1: Code Scratchpad -->
+        <div class="tab-pane active" id="tab-code">
+          <div class="editor-toolbar">
+            <div class="editor-lang-picker">
+              <span class="editor-lang-badge" id="editor-lang-display" style="background: rgb(241, 245, 249); border: 1.5px solid rgb(203, 213, 225); padding: 0.3rem 0.75rem; border-radius: 0.5rem; font-size: 0.82rem; font-weight: 700; color: rgb(30, 41, 59); display: inline-flex; align-items: center; gap: 0.35rem;">
+                🐍 Python
+              </span>
+              <select id="editor-lang" class="form-select-sm" style="display: none;">
+                <option value="python">Python</option>
+                <option value="javascript">JavaScript</option>
+                <option value="java">Java</option>
+                <option value="cpp">C++</option>
+                <option value="go">Go</option>
+              </select>
+            </div>
+            <div class="editor-actions">
+              <button type="button" class="btn btn-ghost btn-sm" id="btn-reset-boilerplate" onclick="resetBoilerplate()" title="Reset scratchpad to question starter code">
+                <span>↺ Starter Code</span>
+              </button>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="clearScratchpad()" title="Clear Scratchpad">
+                Clear
+              </button>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="copyScratchpad()" title="Copy to clipboard">
+                Copy
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="insertCodeIntoChat()" title="Insert into chat input">
+                Insert into Chat
+              </button>
+            </div>
+          </div>
+
+          <div class="editor-container">
+            <textarea
+              id="code-scratchpad"
+              class="code-editor-area"
+              spellcheck="false"
+              placeholder="// Write your code, pseudo-code, data structures, or system architecture notes here...&#10;&#10;class Solution:&#10;    def solve(self, input_data):&#10;        # Optimal approach with O(N) time complexity&#10;        pass"
+            ></textarea>
+          </div>
+          <div class="editor-footer">
+            <span class="editor-info" id="editor-char-count">0 lines • UTF-8</span>
+            <span class="editor-hint">Scratchpad stays saved during the session</span>
+          </div>
+        </div>
+
+        <!-- Tab 2: Evaluation Rubric & Guidelines -->
+        <div class="tab-pane" id="tab-rubric">
+          <div class="rubric-content">
+            <div class="rubric-header">
+              <h3>7-Dimension Assessment</h3>
+              <p>Your performance is scored across the following key interview criteria:</p>
+            </div>
+
+            <div class="rubric-list">
+              <div class="rubric-item">
+                <div class="rubric-icon">⚙️</div>
+                <div class="rubric-detail">
+                  <strong>Technical Competence</strong>
+                  <p>Correct algorithms, accurate data structures, and edge case coverage.</p>
+                </div>
+              </div>
+
+              <div class="rubric-item">
+                <div class="rubric-icon">🧩</div>
+                <div class="rubric-detail">
+                  <strong>Problem-Solving Methodology</strong>
+                  <p>Step-by-step reasoning, trade-off comparisons, Big-O complexity analysis.</p>
+                </div>
+              </div>
+
+              <div class="rubric-item">
+                <div class="rubric-icon">💬</div>
+                <div class="rubric-detail">
+                  <strong>Communication Clarity</strong>
+                  <p>Clear explanations, concise answers, and clarifying requirements early.</p>
+                </div>
+              </div>
+
+              <div class="rubric-item">
+                <div class="rubric-icon">⭐</div>
+                <div class="rubric-detail">
+                  <strong>STAR Behavioral Framing</strong>
+                  <p>Situation, Task, Action, and measurable Result in practical scenarios.</p>
+                </div>
+              </div>
+
+              <div class="rubric-item">
+                <div class="rubric-icon">🔄</div>
+                <div class="rubric-detail">
+                  <strong>Adaptability Under Probing</strong>
+                  <p>Receptiveness to feedback, course-correcting when bottlenecks are found.</p>
+                </div>
+              </div>
+
+              <div class="rubric-item">
+                <div class="rubric-icon">🎯</div>
+                <div class="rubric-detail">
+                  <strong>Confidence & Alignment</strong>
+                  <p>Decisive recommendations with sound engineering intuition.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="rubric-tips-box">
+              <h4>💡 Pro Interview Tips</h4>
+              <ul>
+                <li>Always state your Big-O Time & Space complexity.</li>
+                <li>Ask clarifying questions if requirements seem open-ended.</li>
+                <li>Start with a brute-force outline, then optimize.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Modal: Confirm End Interview -->
+  <div class="modal-backdrop hidden" id="modal-end-session">
+    <div class="modal-dialog glass-card">
+      <div class="modal-header">
+        <h2>End Interview Session?</h2>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to conclude this interview session now? The AI will wrap up your answers and finalize your evaluation report.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="closeEndModal()">Continue Interview</button>
+        <button type="button" class="btn btn-danger" id="btn-confirm-end" onclick="finishInterview()">End Interview</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Interview Complete -->
+  <div class="modal-backdrop hidden" id="modal-complete-session">
+    <div class="modal-dialog glass-card text-center">
+      <div class="complete-badge">🎉</div>
+      <h2>Interview Completed!</h2>
+      <p class="complete-text">Your interview has ended and your responses have been saved. You can generate your evaluation report now or return to the dashboard.</p>
+      
+      <div class="complete-actions">
+        <a href="#" id="link-view-report" class="btn btn-primary btn-lg">
+          <span>Generate Evaluation Report</span>
+          <span class="arrow">⚡</span>
+        </a>
+        <a href="/history" class="btn btn-secondary">Go to Interview History</a>
+        <a href="/dashboard" class="btn btn-ghost">Return to Dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/marked.min.js"></script>
+  <script src="/static/js/interview.js"></script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hermes — Technical AI Mentor & Strategy Coach | GAIUS</title>
+  <meta name="description" content="Consult Hermes, your dedicated Technical Interview AI Mentor. Grounded in your ChromaDB evaluation reports to provide targeted algorithmic growth and complexity analysis.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/main.css">
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+  <link rel="stylesheet" href="/static/css/coach.css">
+</head>
+<body style="background-color: #FAF7F2; color: #0F172A; min-height: 100vh; display: flex; flex-direction: column;">
+
+  <!-- BEGIN: Floating Navigation Header -->
+  <header class="floating-nav-header anim-nav-drop">
+    <div class="floating-nav-pill">
+      <a class="nav-brand-link" href="/dashboard">
+        <span class="nav-brand-title">GAIUS</span>
+      </a>
+
+      <div class="nav-menu-pills">
+        <a class="nav-menu-link" href="/dashboard">Dashboard</a>
+        <a class="nav-menu-link" href="/interview" onclick="handleNavInterviewClick(event)">Interview</a>
+        <a class="nav-menu-link" href="/history">History</a>
+        <a class="nav-menu-link active" href="/coach">AI Mentor</a>
+      </div>
+
+      <div class="nav-user-area">
+        <button onclick="window.api.clearAuth(); window.location.href='/';" class="btn-signout" style="background-color: #FED7AA; color: #7C2D12; border-color: #FDBA74; font-weight: 700; cursor: pointer;">
+          Sign Out
+        </button>
+      </div>
+    </div>
+  </header>
+  <!-- END: Floating Navigation Header -->
+
+  <!-- Main Container -->
+  <main class="coach-page-wrapper anim-hero-up" style="flex: 1;">
+
+    <!-- ====================================================================
+         VIEW 1: LANDING VIEW (50% / 50% SPLIT)
+         ==================================================================== -->
+    <div id="coach-landing-view">
+      <!-- Header Banner -->
+      <div class="coach-header-banner">
+        <h1 class="coach-header-title">
+          <span>Hermes</span>
+          <span style="color: #EA580C;">AI Mentor</span>
+          <span class="coach-hermes-pill">Vector Memory Grounded</span>
+        </h1>
+        <p class="coach-header-desc">
+          Your personal technical coach powered by ChromaDB. Hermes analyzes your evaluated interview transcripts, highlights recurring Big-O mistakes, and drills down into your lowest-scoring DSA dimensions.
+        </p>
+      </div>
+
+      <!-- 50% / 50% Split Grid -->
+      <div class="coach-split-grid">
+        
+        <!-- LEFT 50%: Vertical Navigation of Previous Chats -->
+        <div class="coach-panel-card">
+          <div class="coach-panel-header">
+            <div class="coach-panel-title">
+              <span>🏛️</span>
+              <span>Previous Mentorship Sessions</span>
+            </div>
+            <span id="landing-count-badge" class="coach-count-badge">0 Sessions</span>
+          </div>
+
+          <div id="landing-history-list" class="coach-history-list">
+            <!-- Dynamically populated by coach.js -->
+            <div class="coach-empty-history">
+              <div class="coach-empty-icon">⏳</div>
+              <div>Loading mentorship history...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT 50%: Start New Mentorship Session Launcher -->
+        <div class="coach-panel-card coach-launcher-card">
+          <div class="coach-panel-header">
+            <div class="coach-panel-title">
+              <span>⚡</span>
+              <span>Start Mentorship</span>
+            </div>
+            <span class="coach-topic-tag">Grounded in Past Reports</span>
+          </div>
+
+          <div style="flex: 1; display: flex; flex-direction: column;">
+            <p style="color: #64748b; font-size: 0.92rem; margin-bottom: 1.25rem; line-height: 1.5;">
+              Begin a 1-on-1 dialogue with Hermes to analyze your interview evaluations, build customized study roadmaps, and receive actionable technical drills.
+            </p>
+
+            <button id="btn-start-chat-main" class="btn-consult-hermes" style="margin-bottom: 1.5rem;">
+              <span>⚡ Start Fresh Mentorship Chat</span>
+              <span>→</span>
+            </button>
+
+            <div class="coach-starters-section">
+              <div class="coach-starters-label">Or launch directly with a focused template:</div>
+              <div class="coach-starters-chips">
+                <button class="coach-template-card" data-prompt="Analyze my past interview performances and weakest evaluated DSA dimensions, and guide me on how to improve overall.">
+                  <div class="coach-template-icon">🔍</div>
+                  <div class="coach-template-text">
+                    <strong>Diagnostic Review</strong>
+                    <span>Analyze past interview performance, scores, and weakest dimensions</span>
+                  </div>
+                  <span class="coach-template-arrow">→</span>
+                </button>
+
+                <button class="coach-template-card" data-prompt="How can I overcome my biggest interview blind spots and improve my edge case handling and Big-O complexity rigor?">
+                  <div class="coach-template-icon">📈</div>
+                  <div class="coach-template-text">
+                    <strong>Targeted Improvement</strong>
+                    <span>How to fix recurring bugs, missing edge cases, and complexity analysis</span>
+                  </div>
+                  <span class="coach-template-arrow">→</span>
+                </button>
+
+                <button class="coach-template-card" data-prompt="Build me a structured, actionable preparation roadmap and study schedule for my upcoming technical interviews.">
+                  <div class="coach-template-icon">🗓️</div>
+                  <div class="coach-template-text">
+                    <strong>Custom Prep Roadmap</strong>
+                    <span>Structured study schedule and deliberate practice plan tailored to my level</span>
+                  </div>
+                  <span class="coach-template-arrow">→</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         VIEW 2: IN-CHAT VIEW (CHAT MAIN + COLLAPSIBLE RIGHT SIDEBAR)
+         ==================================================================== -->
+    <div id="coach-chat-view" class="hidden">
+      <div class="coach-chat-container">
+
+        <!-- Main Chat Area (Flex-1) -->
+        <div class="coach-chat-main">
+          <!-- Chat Header -->
+          <div class="coach-chat-header">
+            <div class="coach-chat-header-left">
+              <button id="btn-back-to-landing" class="btn-back-to-landing" title="Return to Session List">
+                <span>←</span>
+                <span>All Sessions</span>
+              </button>
+              
+              <div class="coach-avatar-wrapper">
+                <span>⚡</span>
+                <span class="coach-pulse-dot" title="Hermes Online"></span>
+              </div>
+
+              <div class="coach-chat-header-info">
+                <div class="coach-chat-title-row">
+                  <span id="chat-current-title" class="coach-chat-current-title">Mentorship Session</span>
+                  <button id="btn-rename-active-chat" class="btn-rename-icon" title="Rename this conversation">✏️</button>
+                  <span id="chat-topic-tag" class="coach-topic-tag">Strategy</span>
+                </div>
+                <span class="coach-chat-subtitle">Grounded in your ChromaDB Evaluation Vector Store</span>
+              </div>
+            </div>
+
+            <!-- Burger Menu Button to Toggle Right History Sidebar -->
+            <button id="btn-burger-menu" class="btn-burger-menu active" title="Toggle Chat History (☰)">
+              ☰
+            </button>
+          </div>
+
+          <!-- Messages Scrollable Thread -->
+          <div id="chat-messages-area" class="coach-messages-area">
+            <!-- Messages rendered dynamically by coach.js -->
+          </div>
+
+          <!-- Input Bar -->
+          <div class="coach-input-bar">
+            <textarea
+              id="chat-input-textarea"
+              class="coach-textarea"
+              placeholder="Ask Hermes about your evaluations, code patterns, or strategy... (Shift+Enter for newline)"
+              rows="1"
+            ></textarea>
+            <button id="btn-send-message" class="btn-send-message">
+              <span>Send</span>
+              <span>↑</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Collapsible Vertical Sidebar (Right Side) -->
+        <div id="coach-sidebar-right" class="coach-sidebar-right">
+          <div class="coach-sidebar-header">
+            <div class="coach-sidebar-title">
+              <span>🏛️</span>
+              <span>Past Chats</span>
+            </div>
+            <button id="btn-new-chat-small" class="btn-new-chat-small" title="Start a fresh conversation">
+              <span>+</span>
+              <span>New</span>
+            </button>
+          </div>
+
+          <div id="sidebar-history-list" class="coach-sidebar-content">
+            <!-- Populated dynamically by coach.js -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Editorial Footer -->
+  <footer class="editorial-footer" style="margin-top: auto;">
+    <div class="editorial-footer-inner">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span class="status-ping-dot" style="width: 8px; height: 8px; border-radius: 50%; background-color: #10B981; display: inline-block;"></span>
+        <span>Hermes Vector Cognition Active • ChromaDB Synced</span>
+      </div>
+      <div class="editorial-footer-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/interview" onclick="handleNavInterviewClick(event)">Interview</a>
+        <a href="/history">History</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/js/marked.min.js"></script>
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/coach.js"></script>
+</body>
+</html>

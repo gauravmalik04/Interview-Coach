@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evaluation Scorecard — GAIUS</title>
+  <meta name="description" content="View detailed technical interview scores, dimension breakdowns, strengths, and recommended focus areas.">
+  <link rel="stylesheet" href="/static/css/main.css">
+  <link rel="stylesheet" href="/static/css/report.css">
+</head>
+<body style="background-color: rgb(250, 247, 242); color: rgb(15, 23, 42);">
+  
+  <!-- BEGIN: Floating Glassmorphic Top Navigation -->
+  <header class="floating-nav-header anim-nav-drop">
+    <div class="floating-nav-pill">
+      <a class="nav-brand-link" href="/dashboard">
+        <span class="nav-brand-title">GAIUS</span>
+      </a>
+
+      <div class="nav-menu-pills">
+        <a class="nav-menu-link" href="/dashboard">Dashboard</a>
+        <a class="nav-menu-link" href="/interview" onclick="handleNavInterviewClick(event)">Interview</a>
+        <a class="nav-menu-link" href="/history">History</a>
+        <a class="nav-menu-link" href="/coach">AI Mentor</a>
+      </div>
+
+      <div class="nav-user-area">
+        <a href="/dashboard" class="btn-signout" style="background-color: rgb(254, 215, 170); color: rgb(124, 45, 18); border-color: rgb(253, 186, 116); font-weight: 700;">
+          ← Dashboard
+        </a>
+      </div>
+    </div>
+  </header>
+  <!-- END: Floating Navigation -->
+
+  <main style="max-width: 80rem; margin: 0 auto; width: 100%; padding: 6.5rem 1.5rem 3rem 1.5rem;">
+    <!-- Main dynamic report content injected by report.js -->
+    <div id="report-container">
+      <div class="summary-meta-card anim-hero-up" style="text-align: center; padding: 4rem 2rem;">
+        <div style="font-size: 3rem; margin-bottom: 1rem; animation: softPulseDot 1.5s infinite;">⚡</div>
+        <h2 style="font-size: 1.6rem; font-weight: 800;">Retrieving Evaluation Report...</h2>
+        <p style="color: rgb(100, 116, 139); margin-top: 0.5rem;">Analyzing multi-dimensional metrics, code submissions, and Big-O complexities.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Editorial Footer -->
+  <footer class="editorial-footer">
+    <div class="editorial-footer-inner">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span class="status-ping-dot" style="width: 8px; height: 8px; border-radius: 50%; background-color: rgb(251, 113, 133); display: inline-block;"></span>
+        <span>Systems operational • Gaius Enterprise v2.4</span>
+      </div>
+      <div class="editorial-footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Evaluation Rubrics</a>
+        <a href="#">Documentation</a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast-container"></div>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/report.js"></script>
+</body>
+</html>

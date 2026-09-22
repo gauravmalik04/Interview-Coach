@@ -1,0 +1,222 @@
+[
+  {
+    "id": "arr-1",
+    "category": "Arrays & Hashing",
+    "difficulty": "easy",
+    "text": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. You may assume that each input would have exactly one solution, and you may not use the same element twice.\n\nExample:\nInput: nums = [2,7,11,15], target = 9\nOutput: [0,1] (since nums[0] + nums[1] == 9)",
+    "optimal_complexity": "Time: O(N), Space: O(N)",
+    "follow_ups": [
+      "If the array is already sorted, can you achieve O(1) auxiliary space using a two-pointer approach?",
+      "How would you return all unique pairs that sum up to target if duplicates exist in the array (e.g., 2Sum II / 3Sum)?"
+    ]
+  },
+  {
+    "id": "arr-2",
+    "category": "Arrays & Hashing",
+    "difficulty": "medium",
+    "text": "Given an integer array nums, find the subarray with the largest sum, and return its sum (Kadane's Algorithm).\n\nExample:\nInput: nums = [-2,1,-3,4,-1,2,1,-5,4]\nOutput: 6 (Subarray [4,-1,2,1] has the largest sum = 6)",
+    "optimal_complexity": "Time: O(N), Space: O(1)",
+    "follow_ups": [
+      "How would you modify Kadane's algorithm to print the actual starting and ending indices of the maximum subarray?",
+      "What if all numbers in the array are negative? How does your solution handle this edge case?"
+    ]
+  },
+  {
+    "id": "arr-3",
+    "category": "Arrays & Hashing",
+    "difficulty": "medium",
+    "text": "Given an array nums with n objects colored red, white, or blue, sort them in-place so that objects of the same color are adjacent, with the colors in the order red, white, and blue (represented by integers 0, 1, and 2 respectively - Dutch National Flag algorithm).\n\nExample:\nInput: nums = [2,0,2,1,1,0]\nOutput: [0,0,1,1,2,2]",
+    "optimal_complexity": "Time: O(N), Space: O(1) one-pass",
+    "follow_ups": [
+      "Why is a two-pass counting sort less optimal in an interview setting than the 3-pointer Dutch National Flag algorithm?",
+      "Can this partitioning strategy be generalized to sort an array containing 4 or K distinct values in a single pass?"
+    ]
+  },
+  {
+    "id": "bs-1",
+    "category": "Binary Search",
+    "difficulty": "medium",
+    "text": "There is an integer array nums sorted in ascending order (with distinct values). Prior to being passed to your function, nums is possibly rotated at an unknown pivot index k.\nGiven the rotated array nums and an integer target, return the index of target if it is in nums, or -1 if it is not in nums. You must write an algorithm with O(log n) runtime complexity.\n\nExample:\nInput: nums = [4,5,6,7,0,1,2], target = 0\nOutput: 4",
+    "optimal_complexity": "Time: O(log N), Space: O(1)",
+    "follow_ups": [
+      "How does the time complexity degrade if duplicate elements are allowed in the rotated array (e.g., nums = [1,0,1,1,1])?",
+      "How would you find the minimum element or the rotation pivot in O(log N) time?"
+    ]
+  },
+  {
+    "id": "bs-2",
+    "category": "Binary Search",
+    "difficulty": "hard",
+    "text": "You are given an array of books where each element represents the number of pages in a book, and an integer k representing the number of students. Allocate books such that the maximum number of pages allocated to any student is minimized. Each student must get at least one contiguous book.\n\nExample:\nInput: pages = [12, 34, 67, 90], k = 2\nOutput: 113",
+    "optimal_complexity": "Time: O(N * log(sum(pages) - max(pages))), Space: O(1)",
+    "follow_ups": [
+      "What defines the lower bound and upper bound of the search space for binary search on answer?",
+      "How does this problem relate mathematically to Aggressive Cows, Painter's Partition, and Capacity to Ship Packages Within D Days?"
+    ]
+  },
+  {
+    "id": "ll-1",
+    "category": "Linked Lists",
+    "difficulty": "medium",
+    "text": "Given the head of a singly linked list, reverse the list, and return the reversed list. Can you solve it both iteratively and recursively in O(N) time?\n\nExample:\nInput: head = [1,2,3,4,5]\nOutput: [5,4,3,2,1]",
+    "optimal_complexity": "Time: O(N), Space: O(1) iterative",
+    "follow_ups": [
+      "What is the call stack space complexity of the recursive solution, and what risks does it carry for lists with 10^5 nodes?",
+      "How would you reverse nodes in k-group (Reverse Nodes in k-Group)?"
+    ]
+  },
+  {
+    "id": "ll-2",
+    "category": "Linked Lists",
+    "difficulty": "medium",
+    "text": "Given head, the head of a linked list, determine if the linked list has a cycle in it. Furthermore, return the node where the cycle begins. If there is no cycle, return null (Floyd's Tortoise and Hare algorithm).\n\nExample:\nInput: head = [3,2,0,-4], pos = 1 (tail connects to 2nd node)\nOutput: Node with value 2",
+    "optimal_complexity": "Time: O(N), Space: O(1)",
+    "follow_ups": [
+      "Can you prove mathematically why the distance from the head to cycle entry equals the distance from the meeting point to cycle entry?",
+      "How would you find the middle element of a linked list in a single pass without computing its length first?"
+    ]
+  },
+  {
+    "id": "sq-1",
+    "category": "Stacks & Queues",
+    "difficulty": "medium",
+    "text": "Given an array of integers heights representing the histogram's bar height where the width of each bar is 1, return the area of the largest rectangle in the histogram.\n\nExample:\nInput: heights = [2,1,5,6,2,3]\nOutput: 10 (The largest rectangle is formed by bars [5,6] with height 5 and width 2)",
+    "optimal_complexity": "Time: O(N), Space: O(N) using Monotonic Stack",
+    "follow_ups": [
+      "Explain the invariant maintained by the monotonic increasing stack in your solution.",
+      "How does this solution generalize to finding the maximal rectangle of 1s in a 2D binary matrix?"
+    ]
+  },
+  {
+    "id": "sq-2",
+    "category": "Stacks & Queues",
+    "difficulty": "hard",
+    "text": "Design a data structure that functions as a Least Recently Used (LRU) Cache. Implement LRUCache class with get(key) and put(key, value) operations in O(1) average time complexity.",
+    "optimal_complexity": "Time: O(1) get & put, Space: O(capacity)",
+    "follow_ups": [
+      "Why is a Doubly Linked List paired with a Hash Map required for O(1) node deletion and head insertion?",
+      "How would you implement an LFU (Least Frequently Used) cache with O(1) get and put?"
+    ]
+  },
+  {
+    "id": "sw-1",
+    "category": "Two Pointers & Sliding Window",
+    "difficulty": "medium",
+    "text": "Given a string s, find the length of the longest substring without repeating characters.\n\nExample:\nInput: s = \"abcabcbb\"\nOutput: 3 (The answer is \"abc\", with the length of 3)",
+    "optimal_complexity": "Time: O(N), Space: O(min(N, Alphabet_Size))",
+    "follow_ups": [
+      "How would you jump the left pointer directly past the repeated character using a map of indices rather than advancing one step at a time?",
+      "How would you solve the Minimum Window Substring problem where all characters of another string t must be contained?"
+    ]
+  },
+  {
+    "id": "tree-1",
+    "category": "Binary Trees & BST",
+    "difficulty": "medium",
+    "text": "Given the root of a binary tree, return the level order traversal of its nodes' values (i.e., from left to right, level by level).\n\nExample:\nInput: root = [3,9,20,null,null,15,7]\nOutput: [[3],[9,20],[15,7]]",
+    "optimal_complexity": "Time: O(N), Space: O(W) where W is max tree width",
+    "follow_ups": [
+      "How would you compute the Maximum Width of a Binary Tree where null nodes between existing nodes are counted (indexing nodes like a binary heap)?",
+      "How do you serialize and deserialize a binary tree to and from a string format?"
+    ]
+  },
+  {
+    "id": "tree-2",
+    "category": "Binary Trees & BST",
+    "difficulty": "medium",
+    "text": "Given a Binary Search Tree (BST) and two nodes p and q, find their Lowest Common Ancestor (LCA). Can you take advantage of BST properties to solve it without storing parent pointers or paths?\n\nExample:\nInput: root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 8\nOutput: 6",
+    "optimal_complexity": "Time: O(H) where H is tree height, Space: O(1) iterative",
+    "follow_ups": [
+      "How does the LCA solution change if the tree is an arbitrary binary tree without BST ordering properties?",
+      "How would you validate whether a given binary tree is a strictly valid BST (handling boundary values INT_MIN and INT_MAX)?"
+    ]
+  },
+  {
+    "id": "graph-1",
+    "category": "Graphs",
+    "difficulty": "medium",
+    "text": "There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [a, b] indicates that you must take course b first if you want to take course a.\nReturn true if you can finish all courses, otherwise return false (Course Schedule / Cycle Detection in Directed Graph).\n\nExample:\nInput: numCourses = 2, prerequisites = [[1,0]]\nOutput: true",
+    "optimal_complexity": "Time: O(V + E), Space: O(V + E)",
+    "follow_ups": [
+      "Explain how Kahn's algorithm (indegree BFS) detects a cycle compared to DFS with a 3-state visited array (unvisited, visiting, visited).",
+      "How would you return the exact topological course order (Course Schedule II)?"
+    ]
+  },
+  {
+    "id": "graph-2",
+    "category": "Graphs",
+    "difficulty": "hard",
+    "text": "Given a network of n nodes labeled 1 to n, and a list of directed edges with travel times, find the minimum time it takes for all nodes to receive a signal sent from a starting node k. If it is impossible for all nodes to receive the signal, return -1 (Dijkstra's Shortest Path Algorithm).\n\nExample:\nInput: times = [[2,1,1],[2,3,1],[3,4,1]], n = 4, k = 2\nOutput: 2",
+    "optimal_complexity": "Time: O(E * log V), Space: O(V + E) using min-heap priority queue",
+    "follow_ups": [
+      "Why does standard Dijkstra's algorithm fail on graphs with negative edge weights, and which algorithm would you use instead?",
+      "Under what network condition does Bellman-Ford or Floyd-Warshall become more appropriate?"
+    ]
+  },
+  {
+    "id": "dp-1",
+    "category": "Dynamic Programming",
+    "difficulty": "medium",
+    "text": "You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money. Return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up, return -1.\n\nExample:\nInput: coins = [1,2,5], amount = 11\nOutput: 3 (11 = 5 + 5 + 1)",
+    "optimal_complexity": "Time: O(amount * len(coins)), Space: O(amount)",
+    "follow_ups": [
+      "Compare top-down memoization vs bottom-up tabulation for Coin Change in terms of recursion overhead and cache locality.",
+      "How does the recurrence relation change if you need to find the total number of unique combinations to make up the amount (Coin Change II / Unbounded Knapsack)?"
+    ]
+  },
+  {
+    "id": "dp-2",
+    "category": "Dynamic Programming",
+    "difficulty": "hard",
+    "text": "Given two strings text1 and text2, return the length of their Longest Common Subsequence (LCS). If there is no common subsequence, return 0.\n\nExample:\nInput: text1 = \"abcde\", text2 = \"ace\"\nOutput: 3 (The longest common subsequence is \"ace\")",
+    "optimal_complexity": "Time: O(M * N), Space: O(min(M, N)) space-optimized",
+    "follow_ups": [
+      "How do you reconstruct and print the actual LCS string from the DP table?",
+      "How does LCS map to Edit Distance (Levenshtein Distance) and Shortest Common Supersequence?"
+    ]
+  },
+  {
+    "id": "rec-1",
+    "category": "Recursion & Backtracking",
+    "difficulty": "medium",
+    "text": "Given an array of distinct integers candidates and a target integer target, return a list of all unique combinations of candidates where the chosen numbers sum to target. The same number may be chosen from candidates an unlimited number of times.\n\nExample:\nInput: candidates = [2,3,6,7], target = 7\nOutput: [[2,2,3],[7]]",
+    "optimal_complexity": "Time: O(2^T) where T = target/min(candidates), Space: O(T)",
+    "follow_ups": [
+      "How do you avoid generating duplicate combinations if the input array itself contains duplicates and each number can only be used once (Combination Sum II)?",
+      "What is the difference between combination generation and permutation generation in recursion branch state?"
+    ]
+  },
+  {
+    "id": "heap-1",
+    "category": "Heaps & Priority Queues",
+    "difficulty": "hard",
+    "text": "You are given an array of k linked-lists lists, each linked-list is sorted in ascending order. Merge all the linked-lists into one sorted linked-list and return it.\n\nExample:\nInput: lists = [[1,4,5],[1,3,4],[2,6]]\nOutput: [1,1,2,3,4,4,5,6]",
+    "optimal_complexity": "Time: O(N * log K) where N is total nodes, Space: O(K) using min-heap",
+    "follow_ups": [
+      "Compare solving Merge K Sorted Lists using a Min-Heap vs Divide and Conquer (Pairwise Merge Sort). Which has better cache performance?",
+      "How would you find the Median from a Data Stream with O(1) findMedian and O(log N) addNum using two heaps?"
+    ]
+  },
+  {
+    "id": "greedy-1",
+    "category": "Greedy Algorithms",
+    "difficulty": "medium",
+    "text": "Given an array of meeting time intervals consisting of start and end times [[s1,e1],[s2,e2],...], find the minimum number of conference rooms required (or Maximum Non-Overlapping Intervals).\n\nExample:\nInput: intervals = [[0,30],[5,10],[15,20]]\nOutput: 2",
+    "optimal_complexity": "Time: O(N log N), Space: O(N)",
+    "follow_ups": [
+      "Why does sorting start times and end times separately (or using a min-heap of active meetings) guarantee the optimal greedy choice?",
+      "Can you prove the greedy choice property for the classic Fractional Knapsack vs 0/1 Knapsack?"
+    ]
+  },
+  {
+    "id": "trie-1",
+    "category": "Tries",
+    "difficulty": "medium",
+    "text": "A trie (pronounced as \"try\") or prefix tree is a tree data structure used to efficiently store and retrieve keys in a dataset of strings. Implement the Trie class with insert(word), search(word), and startsWith(prefix) operations.\n\nExample:\ninsert(\"apple\") -> search(\"apple\") returns true -> startsWith(\"app\") returns true",
+    "optimal_complexity": "Time: O(L) for all operations where L is string length, Space: O(N * L)",
+    "follow_ups": [
+      "How does a Bitwise Trie allow you to find the Maximum XOR of Two Numbers in an Array in O(32 * N) = O(N) time?",
+      "What are the memory trade-offs between an array-based child pointer trie (26 pointers) vs a hash map based trie?"
+    ]
+  }
+]

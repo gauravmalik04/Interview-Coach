@@ -1,0 +1,161 @@
+# ==============================================================================
+# Git Ignore Configuration for AI Interview Platform
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Python & Bytecode
+# ------------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ------------------------------------------------------------------------------
+# Virtual Environments
+# ------------------------------------------------------------------------------
+venv/
+venv*/
+env/
+env*/
+ENV/
+.venv/
+.venv*/
+env.bak/
+venv.bak/
+
+# ------------------------------------------------------------------------------
+# Testing, Coverage & Caches
+# ------------------------------------------------------------------------------
+tests/
+pytest.ini
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# ------------------------------------------------------------------------------
+# Type Checking & Linters
+# ------------------------------------------------------------------------------
+.mypy_cache/
+.pyre/
+.pytype/
+.ruff_cache/
+cython_debug/
+
+# ------------------------------------------------------------------------------
+# Environment Variables & Secrets
+# ------------------------------------------------------------------------------
+.env
+.env.*
+*.env
+backend/.env
+# Whitelist example configurations
+!.env.example
+!.env.template
+!backend/.env.example
+
+# ------------------------------------------------------------------------------
+# Databases, Vector Stores & Checkpoints
+# ------------------------------------------------------------------------------
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+*.sqlite3-shm
+*.sqlite3-wal
+backend/*.db
+backend/*.db-shm
+backend/*.db-wal
+ai_interview.db*
+checkpoints.db*
+chroma_data/
+backend/chroma_data/
+chromadb/
+vector_store/
+
+# ------------------------------------------------------------------------------
+# Logs & Temporary Files / Local Drafts
+# ------------------------------------------------------------------------------
+*.log
+logs/
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+scratch/
+design-ai-interview/
+
+# ------------------------------------------------------------------------------
+# Model Weights & Hugging Face Caches
+# ------------------------------------------------------------------------------
+models_cache/
+hf_cache/
+.huggingface/
+checkpoints/
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.onnx
+
+# ------------------------------------------------------------------------------
+# Node & Frontend (if applicable)
+# ------------------------------------------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.eslintcache
+
+# ------------------------------------------------------------------------------
+# IDEs & Text Editors
+# ------------------------------------------------------------------------------
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.ipynb_checkpoints
+
+# ------------------------------------------------------------------------------
+# Operating System Artifacts
+# ------------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+ehthumbs_vista.db
+Thumbs.db
+Thumbs.db:encryptable
+[Dd]esktop.ini
+$RECYCLE.BIN/

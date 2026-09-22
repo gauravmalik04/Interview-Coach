@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GAIUS — Adaptive Technical Interview Platform</title>
+  <meta name="description" content="Master technical interviews with adaptive AI agents, real-time rubric scoring across 7 dimensions, and personalized vector-grounded AI coaching.">
+  
+  <link rel="stylesheet" href="/static/css/main.css">
+  <link rel="stylesheet" href="/static/css/auth.css">
+</head>
+<body style="background-color: rgb(250, 247, 242); color: rgb(15, 23, 42);">
+  
+  <!-- BEGIN: Floating Glassmorphic Navigation -->
+  <header class="floating-nav-header anim-nav-drop">
+    <div class="floating-nav-pill">
+      <a class="nav-brand-link" href="/">
+        <span class="nav-brand-title">GAIUS</span>
+      </a>
+      
+      <div class="nav-menu-pills">
+        <a class="nav-menu-link" href="#features">Features</a>
+        <a class="nav-menu-link" href="#rubric">7-Metric Rubric</a>
+      </div>
+
+      <div class="nav-user-area">
+        <a href="#auth-card" class="btn-signout" style="background-color: rgb(254, 215, 170); color: rgb(124, 45, 18); border-color: rgb(253, 186, 116); font-weight: 700;">
+          Get Started
+        </a>
+      </div>
+    </div>
+  </header>
+  <!-- END: Floating Navigation -->
+
+  <!-- Hero & Auth Section -->
+  <main class="hero-container">
+    <div class="hero-content anim-hero-up">
+      <div class="hero-badge-pill">
+        <span>⚡</span>
+        <span>Adaptive LLM Agents • ChromaDB RAG • 7 Dimensions</span>
+      </div>
+
+      <h1 class="hero-title">
+        Ace Your Next <span class="text-amber-editorial">Technical Interview</span> With Adaptive AI
+      </h1>
+
+      <p class="hero-subtitle">
+        Practice algorithmic reasoning, system design, and computer science fundamentals with an AI agent that probes your thinking, evaluates you on 7 rigorous dimensions, and coaches your improvement.
+      </p>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-number" style="color: #831843;">7</div>
+          <div class="stat-label">Core Evaluation Dimensions</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" style="color: #4C1D95;">O(1)</div>
+          <div class="stat-label">Probing & Adaptive Depth</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" style="color: #0369A1;">RAG</div>
+          <div class="stat-label">Vector-Grounded Coach</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Auth Card -->
+    <div class="auth-card-wrapper anim-island-left" id="auth-card">
+      <div class="auth-card">
+        <div class="auth-tabs">
+          <button type="button" class="auth-tab active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+          <button type="button" class="auth-tab" id="tab-register" onclick="switchTab('register')">Create Account</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="form-login" class="auth-form" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label class="form-label" for="login-email">Email Address</label>
+            <input type="email" id="login-email" class="soft-input" placeholder="candidate@example.com" required autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="login-password">Password</label>
+            <input type="password" id="login-password" class="soft-input" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="btn-block" id="btn-submit-login">
+            <span>Sign In to Dashboard</span>
+            <span class="arrow">→</span>
+          </button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="form-register" class="auth-form hidden" onsubmit="handleRegister(event)">
+          <div class="form-group">
+            <label class="form-label" for="reg-fullname">Full Name</label>
+            <input type="text" id="reg-fullname" class="soft-input" placeholder="Alice Smith" required autocomplete="name">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="reg-email">Email Address</label>
+            <input type="email" id="reg-email" class="soft-input" placeholder="candidate@example.com" required autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="reg-password">Password (min 6 chars)</label>
+            <input type="password" id="reg-password" class="soft-input" placeholder="••••••••" minlength="6" required autocomplete="new-password">
+          </div>
+          <button type="submit" class="btn-block" id="btn-submit-register">
+            <span>Create Candidate Account</span>
+            <span class="arrow">→</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Editorial Footer -->
+  <footer class="editorial-footer">
+    <div class="editorial-footer-inner">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span class="status-ping-dot" style="width: 8px; height: 8px; border-radius: 50%; background-color: rgb(251, 113, 133); display: inline-block;"></span>
+        <span>Systems operational • Gaius Enterprise v2.4</span>
+      </div>
+      <div class="editorial-footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Evaluation Rubrics</a>
+        <a href="#">Documentation</a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast-container"></div>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/auth.js"></script>
+</body>
+</html>
