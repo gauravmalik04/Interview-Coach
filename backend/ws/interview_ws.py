@@ -66,12 +66,22 @@ async def interview_websocket_endpoint(websocket: WebSocket, session_id: str):
         except Exception:
             transcript = []
 
+        def _to_utc_iso(dt):
+            if not dt:
+                return None
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            return dt.isoformat()
+
         await websocket.send_json({
             "type": "session_init",
             "session_id": session.id,
             "topic": session.topic,
             "phase": session.current_phase,
             "status": session.status,
+            "started_at": _to_utc_iso(session.started_at),
+            "ended_at": _to_utc_iso(session.ended_at),
+            "elapsed_seconds": session.elapsed_seconds or 0,
             "transcript": transcript,
         })
 
@@ -82,7 +92,36 @@ async def interview_websocket_endpoint(websocket: WebSocket, session_id: str):
             msg_type = data.get("type")
 
             if msg_type == "ping":
+                sec = data.get("elapsed_seconds")
+                if isinstance(sec, (int, float)) and sec > 0:
+                    async with AsyncSessionLocal() as db:
+                        result = await db.execute(
+                            select(InterviewSession).where(
+                                InterviewSession.id == session_id,
+                                InterviewSession.user_id == user.id,
+                            )
+                        )
+                        curr_session = result.scalar_one_or_none()
+                        if curr_session:
+                            curr_session.elapsed_seconds = max(curr_session.elapsed_seconds or 0, int(sec))
+                            await db.commit()
                 await websocket.send_json({"type": "pong"})
+                continue
+
+            elif msg_type == "timer_sync":
+                sec = data.get("elapsed_seconds")
+                if isinstance(sec, (int, float)) and sec >= 0:
+                    async with AsyncSessionLocal() as db:
+                        result = await db.execute(
+                            select(InterviewSession).where(
+                                InterviewSession.id == session_id,
+                                InterviewSession.user_id == user.id,
+                            )
+                        )
+                        curr_session = result.scalar_one_or_none()
+                        if curr_session:
+                            curr_session.elapsed_seconds = max(curr_session.elapsed_seconds or 0, int(sec))
+                            await db.commit()
                 continue
 
             elif msg_type == "candidate_reply":

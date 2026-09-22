@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime, timezone
-from sqlalchemy import Column, String, DateTime, ForeignKey, Text
+from sqlalchemy import Column, String, DateTime, ForeignKey, Text, Integer
 from sqlalchemy.orm import relationship
 
 from backend.database import Base
@@ -24,6 +24,7 @@ class InterviewSession(Base):
     status = Column(String(50), nullable=False, default="active")  # active, paused, completed
     current_phase = Column(String(50), nullable=False, default="intro")  # intro, warm_up, core, probing, closing, done
     transcript_json = Column(Text, nullable=False, default="[]")  # JSON list of turns
+    elapsed_seconds = Column(Integer, nullable=False, default=0)
     started_at = Column(DateTime(timezone=True), default=utc_now, nullable=False)
     ended_at = Column(DateTime(timezone=True), nullable=True)
 

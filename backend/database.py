@@ -66,6 +66,9 @@ async def init_db() -> None:
                 if "current_question_id" not in existing_cols:
                     logger.info("Migrating schema: adding 'current_question_id' to interview_sessions")
                     sync_conn.execute(text("ALTER TABLE interview_sessions ADD COLUMN current_question_id VARCHAR(50) DEFAULT NULL"))
+                if "elapsed_seconds" not in existing_cols:
+                    logger.info("Migrating schema: adding 'elapsed_seconds' to interview_sessions")
+                    sync_conn.execute(text("ALTER TABLE interview_sessions ADD COLUMN elapsed_seconds INTEGER DEFAULT 0"))
 
         await conn.run_sync(migrate_schema)
     logger.info("Database tables initialized successfully.")

@@ -16,6 +16,7 @@ from backend.schemas.interview import (
     InterviewSessionDetailResponse,
     CandidateReplyRequest,
     CandidateReplyResponse,
+    UpdateTimerRequest,
 )
 from backend.core.dependencies import get_current_user, get_user_from_token_str
 from backend.services.interview_engine import interview_engine
@@ -165,6 +166,11 @@ async def get_session(
             question_item=target_q,
         )
 
+    def _to_aware_utc(dt: Optional[datetime]) -> Optional[datetime]:
+        if dt and dt.tzinfo is None:
+            return dt.replace(tzinfo=timezone.utc)
+        return dt
+
     return InterviewSessionDetailResponse(
         id=session.id,
         user_id=session.user_id,
@@ -173,8 +179,9 @@ async def get_session(
         language=session.language or "python",
         status=session.status,
         current_phase=session.current_phase,
-        started_at=session.started_at,
-        ended_at=session.ended_at,
+        elapsed_seconds=session.elapsed_seconds or 0,
+        started_at=_to_aware_utc(session.started_at),
+        ended_at=_to_aware_utc(session.ended_at),
         transcript=transcript_list,
         boilerplate_code=starter_code,
     )
@@ -313,5 +320,55 @@ async def finish_interview_session(
         "session_id": session.id,
         "status": "completed",
         "phase": "done",
+    }
+
+@router.post("/{session_id}/timer")
+async def update_session_timer(
+    session_id: str,
+    body: Optional[UpdateTimerRequest] = None,
+    seconds: Optional[int] = Query(None),
+    token: Optional[str] = Query(None),
+    authorization: Optional[str] = Header(None),
+    db: AsyncSession = Depends(get_db),
+):
+    """Save the elapsed timer seconds for an interview session."""
+    current_user = None
+    if authorization and authorization.startswith("Bearer "):
+        current_user = await get_user_from_token_str(authorization.split(" ")[1], db)
+    elif token:
+        current_user = await get_user_from_token_str(token, db)
+    
+    if not current_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials"
+        )
+
+    result = await db.execute(
+        select(InterviewSession).where(
+            InterviewSession.id == session_id,
+            InterviewSession.user_id == current_user.id,
+        )
+    )
+    session = result.scalar_one_or_none()
+    if not session:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Interview session not found"
+        )
+
+    sec_val = None
+    if body and body.elapsed_seconds is not None:
+        sec_val = body.elapsed_seconds
+    elif seconds is not None:
+        sec_val = seconds
+
+    if sec_val is not None and sec_val >= 0:
+        session.elapsed_seconds = max(session.elapsed_seconds or 0, sec_val)
+        await db.commit()
+
+    return {
+        "session_id": session.id,
+        "elapsed_seconds": session.elapsed_seconds or 0,
     }
 

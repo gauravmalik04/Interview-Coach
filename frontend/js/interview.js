@@ -12,8 +12,16 @@ let ws = null;
 let pingInterval = null;
 let timerInterval = null;
 let sessionSeconds = 0;
+let sessionStartMs = 0;
 let isWebSocketActive = false;
 let isScratchpadOpen = false;
+
+function parseUtcDate(str) {
+  if (!str) return null;
+  const s = (!str.endsWith('Z') && !str.includes('+')) ? str + 'Z' : str;
+  const d = new Date(s);
+  return isNaN(d.getTime()) ? null : d;
+}
 
 // Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', async () => {
@@ -85,6 +93,27 @@ async function loadSessionData() {
       currentSessionMode = data.interview_mode || 'real';
       currentSessionStatus = data.status || 'active';
 
+      // Initialize continuous uninterrupted timer from started_at
+      if (data.started_at) {
+        const startObj = parseUtcDate(data.started_at);
+        if (startObj) {
+          sessionStartMs = startObj.getTime();
+        }
+      }
+
+      if (currentSessionStatus === 'completed' && data.ended_at && sessionStartMs > 0) {
+        const endObj = parseUtcDate(data.ended_at);
+        const endMs = endObj ? endObj.getTime() : Date.now();
+        sessionSeconds = Math.max(0, Math.floor((endMs - sessionStartMs) / 1000));
+      } else if (sessionStartMs > 0) {
+        // Continuous uninterrupted timer: never stops even when resuming!
+        sessionSeconds = Math.max(0, Math.floor((Date.now() - sessionStartMs) / 1000));
+      } else if (typeof data.elapsed_seconds === 'number' && data.elapsed_seconds > 0) {
+        sessionSeconds = data.elapsed_seconds;
+      }
+
+      updateTimerDisplay();
+
       document.getElementById('interview-topic-badge').textContent = data.topic || 'Technical Interview';
       updatePhase(data.current_phase || 'intro');
 
@@ -145,7 +174,7 @@ function connectWebSocket() {
       clearInterval(pingInterval);
       pingInterval = setInterval(() => {
         if (ws && ws.readyState === WebSocket.OPEN) {
-          ws.send(JSON.stringify({ type: 'ping' }));
+          ws.send(JSON.stringify({ type: 'ping', elapsed_seconds: sessionSeconds }));
         }
       }, 25000);
     };
@@ -182,6 +211,22 @@ function handleWebSocketMessage(msg) {
   hideTypingIndicator();
 
   if (msg.type === 'session_init') {
+    if (msg.started_at) {
+      const startObj = parseUtcDate(msg.started_at);
+      if (startObj) {
+        sessionStartMs = startObj.getTime();
+      }
+    }
+    if (currentSessionStatus === 'completed' && msg.ended_at && sessionStartMs > 0) {
+      const endObj = parseUtcDate(msg.ended_at);
+      const endMs = endObj ? endObj.getTime() : Date.now();
+      sessionSeconds = Math.max(0, Math.floor((endMs - sessionStartMs) / 1000));
+    } else if (sessionStartMs > 0) {
+      sessionSeconds = Math.max(0, Math.floor((Date.now() - sessionStartMs) / 1000));
+    } else if (typeof msg.elapsed_seconds === 'number' && msg.elapsed_seconds > sessionSeconds) {
+      sessionSeconds = msg.elapsed_seconds;
+    }
+    updateTimerDisplay();
     if (msg.topic) {
       document.getElementById('interview-topic-badge').textContent = msg.topic;
     }
@@ -489,16 +534,51 @@ function updateConnectionStatus(status) {
 }
 
 // Session Timer
+function updateTimerDisplay() {
+  const mins = String(Math.floor(sessionSeconds / 60)).padStart(2, '0');
+  const secs = String(sessionSeconds % 60).padStart(2, '0');
+  const display = document.getElementById('timer-display');
+  if (display) {
+    display.textContent = `${mins}:${secs}`;
+  }
+}
+
+function syncTimerToBackend() {
+  if (!currentSessionId || sessionSeconds <= 0) return;
+  if (isWebSocketActive && ws && ws.readyState === WebSocket.OPEN) {
+    try {
+      ws.send(JSON.stringify({ type: 'timer_sync', elapsed_seconds: sessionSeconds }));
+      return;
+    } catch (e) {}
+  }
+  const token = window.api.getAccessToken();
+  if (token) {
+    window.api.post(`/sessions/${currentSessionId}/timer`, { elapsed_seconds: sessionSeconds }).catch(() => {});
+  }
+}
+
 function startTimer() {
-  sessionSeconds = 0;
   clearInterval(timerInterval);
+  updateTimerDisplay();
+
+  if (currentSessionStatus === 'completed') {
+    return;
+  }
+
   timerInterval = setInterval(() => {
-    sessionSeconds++;
-    const mins = String(Math.floor(sessionSeconds / 60)).padStart(2, '0');
-    const secs = String(sessionSeconds % 60).padStart(2, '0');
-    const display = document.getElementById('timer-display');
-    if (display) {
-      display.textContent = `${mins}:${secs}`;
+    if (sessionStartMs > 0) {
+      sessionSeconds = Math.max(0, Math.floor((Date.now() - sessionStartMs) / 1000));
+    } else {
+      sessionSeconds++;
+    }
+    updateTimerDisplay();
+
+    try {
+      localStorage.setItem(`gaius_timer_${currentSessionId}`, sessionSeconds);
+    } catch (e) {}
+
+    if (sessionSeconds % 5 === 0) {
+      syncTimerToBackend();
     }
   }, 1000);
 }
@@ -694,6 +774,11 @@ async function finishInterview() {
 function showCompleteModal(sessionId) {
   clearInterval(timerInterval);
   currentSessionStatus = 'completed';
+  if (sessionStartMs > 0) {
+    sessionSeconds = Math.max(0, Math.floor((Date.now() - sessionStartMs) / 1000));
+    updateTimerDisplay();
+  }
+  syncTimerToBackend();
   const modal = document.getElementById('modal-complete-session');
   const link = document.getElementById('link-view-report');
 
@@ -722,8 +807,26 @@ window.addEventListener('beforeunload', (e) => {
   }
 });
 
-// Terminate real interview on tab close, window close, or navigation
+// Save timer and terminate real interview on tab close, window close, or navigation
 window.addEventListener('pagehide', () => {
+  if (currentSessionId && sessionSeconds > 0) {
+    try {
+      localStorage.setItem(`gaius_timer_${currentSessionId}`, sessionSeconds);
+    } catch (e) {}
+
+    const token = window.api.getAccessToken();
+    const timerUrl = `/sessions/${currentSessionId}/timer?seconds=${sessionSeconds}&token=${encodeURIComponent(token || '')}`;
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(timerUrl);
+    } else {
+      fetch(timerUrl, {
+        method: 'POST',
+        keepalive: true,
+        headers: { 'Authorization': `Bearer ${token}` }
+      }).catch(() => {});
+    }
+  }
+
   if (currentSessionMode === 'real' && currentSessionStatus !== 'completed' && currentPhase !== 'done' && currentSessionId) {
     currentSessionStatus = 'completed';
     const token = window.api.getAccessToken();
