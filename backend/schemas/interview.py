@@ -20,6 +20,7 @@ class InterviewSessionResponse(BaseModel):
     language: str = "python"
     status: str
     current_phase: str
+    elapsed_seconds: int = 0
     started_at: datetime
     ended_at: Optional[datetime] = None
 
@@ -28,6 +29,9 @@ class InterviewSessionResponse(BaseModel):
 class InterviewSessionDetailResponse(InterviewSessionResponse):
     transcript: List[Dict[str, Any]] = []
     boilerplate_code: Optional[str] = None
+
+class UpdateTimerRequest(BaseModel):
+    elapsed_seconds: int = Field(default=0, ge=0, description="Elapsed time in seconds for the session")
 
 class WebSocketMessage(BaseModel):
     type: str  # candidate_reply, ping, token, phase_change, interview_complete, error
