@@ -11,7 +11,7 @@
 **GAIUS** is an enterprise-grade, full-stack adaptive technical interview platform engineered to simulate rigorous FAANG+ engineering interviews. Powered by asynchronous LLM multi-agents, vector-grounded RAG (ChromaDB), real-time WebSockets, and a 7-dimensional evaluation engine, GAIUS assesses candidates on both technical depth and communication invariants, paired with a dedicated AI Technical Mentor (**Hermes**).
 
 > 📽️ **Project Presentation Deck**: [View Google Slides Presentation](https://docs.google.com/presentation/d/1oUL1YGlsIsbox-qexv6Wi-gmS7iTpwGW/edit?usp=sharing&ouid=111265406321287427023&rtpof=true&sd=true)
-
+> 📽️ **Project Video Resource**: https://drive.google.com/drive/folders/1zuxIdiOqAYo6AqhQThFyGhxgtxeklQGn?usp=sharing
 ---
 
 ## 🌟 Key Features
