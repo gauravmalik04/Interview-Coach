@@ -42,7 +42,19 @@ Every interview session transitions dynamically across structured engineering ph
 5. **Complexity Analysis**: Explicit derivation of worst-case and average-case time ($O$) and space ($O$) bounds.
 6. **Conclusion**: Session wraps up cleanly with responses saved.
 
-### 4. 7-Dimensional Evaluation Engine
+### 4. Dual-Thread Windowed State Memory Architecture
+To optimize response latency while maintaining deep situational awareness, GAIUS employs a concurrent **Windowed State Architecture**:
+* **Thread 1 — Fast Foreground Inference**: Slices the sliding conversational context window down to strictly the **last 2 turns**, minimizing token overhead and drastically lowering Time-To-First-Token (TTFT).
+* **Thread 2 — Concurrent Background Extraction Worker**: Using `asyncio.create_task()`, an isolated background worker (`state_extractor.py`) evaluates candidate messages in parallel, extracting structured algorithmic facts without delaying the chat response.
+* **Structured Situational State (`memory_state_json`)**: Persists cumulative observations in SQLite:
+  * `data_structures_used`: Data structures identified or implemented (e.g., Hash Map, Monotonic Stack, Two Pointers).
+  * `claimed_time_complexity` & `claimed_space_complexity`: Big-O bounds explicitly stated by the candidate.
+  * `identified_edge_cases`: Edge boundaries discussed (empty arrays, duplicates, negative numbers).
+  * `open_weaknesses`: Suboptimal choices, brute-force penalties, or unaddressed bottlenecks.
+  * `key_algorithmic_approach`: Core algorithmic paradigm currently deployed.
+* **Situational Awareness Injection**: The cumulative state is injected into the interviewer's system prompt and heuristic probing engine, ensuring targeted follow-up challenges tailored to open candidate weaknesses.
+
+### 5. 7-Dimensional Evaluation Engine
 Evaluates candidate performance across 7 core software engineering rubrics:
 * **Algorithmic Logic & Invariants**: Correctness, optimal algorithmic paradigm selection.
 * **Time & Space Complexity**: Big-O derivation, memory footprint, auxiliary space.
@@ -54,7 +66,7 @@ Evaluates candidate performance across 7 core software engineering rubrics:
 
 > **On-Demand Report Generation**: Evaluation reports are generated strictly on-demand. Concluding an interview is instantaneous without application freezing. Candidates can click **"Generate Evaluation Report ⚡"** or return directly to the dashboard.
 
-### 5. Hermes — Vector-Grounded AI Technical Mentor
+### 6. Hermes — Vector-Grounded AI Technical Mentor
 Dedicated pedagogical AI mentor equipped with multi-tool intent classification:
 * **Candidate Weakness Analysis**: Inspects historical reports to identify recurring low-scoring dimensions.
 * **Strengths & Highlights**: Surfaces top-scoring dimensions and evidence from recent interviews.
@@ -71,7 +83,7 @@ Dedicated pedagogical AI mentor equipped with multi-tool intent classification:
 ```
 AI-Interview/
 ├── backend/                  # FastAPI Asynchronous Backend
-│   ├── agents/               # Multi-agent logic (Interview, Evaluator, Hermes Mentor)
+│   ├── agents/               # Multi-agent logic (Interview, Evaluator, Hermes Mentor, State Extractor)
 │   ├── core/                 # Auth, security, JWT, dependencies
 │   ├── database/             # Async SQLite engine & table definitions
 │   ├── models/               # SQLAlchemy ORM models (User, Session, Report, Coach)
@@ -98,6 +110,7 @@ AI-Interview/
 * **LLM Engine**: [Hugging Face Inference API](https://huggingface.co/docs/api-inference/index) (`mistralai/Mistral-7B-Instruct-v0.2`).
 * **Real-Time Layer**: WebSockets for low-latency bidirectional message streaming and heartbeat pings.
 * **Frontend**: Vanilla HTML5, modern ES6+ JavaScript, CSS3 Design Tokens, Tailwind CSS utilities, [Marked.js](https://marked.js.org/) for Markdown formatting.
+* **Memory Architecture**: Dual-thread Windowed State Architecture with asynchronous background extraction workers (`state_extractor.py`) and 2-turn sliding window optimization.
 * **Security**: JWT (HMAC-SHA256) access tokens, `passlib` bcrypt password hashing, CORS middleware.
 
 ---
