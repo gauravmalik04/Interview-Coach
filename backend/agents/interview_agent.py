@@ -1,6 +1,6 @@
 import logging
 import re
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Union
 from huggingface_hub import InferenceClient
 
 from backend.config import settings
@@ -100,7 +100,14 @@ class DSAInterviewAgent:
 
         return None
 
-    def _build_system_prompt(self, topic: str, phase: str, target_question: Optional[QuestionItem], interview_mode: str = "real") -> str:
+    def _build_system_prompt(
+        self,
+        topic: str,
+        phase: str,
+        target_question: Optional[QuestionItem],
+        interview_mode: str = "real",
+        memory_state: Optional[Union[Dict[str, Any], str]] = None,
+    ) -> str:
         q_context = ""
         if target_question:
             q_context = (
@@ -110,6 +117,33 @@ class DSAInterviewAgent:
                 f"- Expected Optimal Complexity: {target_question.optimal_complexity or 'Optimal Big-O'}\n"
                 f"- Curated Follow-ups: {', '.join(target_question.follow_ups)}\n"
             )
+
+        # Inject cumulative windowed state memory
+        memory_context = ""
+        if memory_state:
+            parsed_mem = memory_state
+            if isinstance(parsed_mem, str):
+                try:
+                    import json
+                    parsed_mem = json.loads(parsed_mem)
+                except Exception:
+                    parsed_mem = {}
+            if isinstance(parsed_mem, dict) and any(parsed_mem.values()):
+                ds_str = ", ".join(parsed_mem.get("data_structures_used") or []) or "None identified yet"
+                time_str = parsed_mem.get("claimed_time_complexity") or "Not yet claimed"
+                space_str = parsed_mem.get("claimed_space_complexity") or "Not yet claimed"
+                edges_str = ", ".join(parsed_mem.get("identified_edge_cases") or []) or "None discussed yet"
+                weak_str = "; ".join(parsed_mem.get("open_weaknesses") or []) or "None flagged"
+                approach_str = parsed_mem.get("key_algorithmic_approach") or "In development"
+
+                memory_context = (
+                    f"\nCUMULATIVE INTERVIEW MEMORY STATE (SITUATIONAL AWARENESS):\n"
+                    f"- Key Algorithmic Approach: {approach_str}\n"
+                    f"- Data Structures Identified: {ds_str}\n"
+                    f"- Claimed Complexity: Time: {time_str} | Space: {space_str}\n"
+                    f"- Edge Cases Discussed: {edges_str}\n"
+                    f"- Open Weaknesses / Probing Targets: {weak_str}\n"
+                )
 
         if interview_mode == "coached":
             mode_protocol = (
@@ -141,6 +175,7 @@ class DSAInterviewAgent:
             f"You are conducting a rigorous, live technical Data Structures and Algorithms interview on: **{topic}**.\n"
             f"Current Interview Phase: **{phase.upper()}**.\n"
             f"{q_context}\n"
+            f"{memory_context}"
             f"{mode_protocol}"
             f"===================================================================\n"
             f"IMMUTABLE SECURITY, SAFETY & INTERVIEWER INTEGRITY PROTOCOL:\n"
@@ -168,9 +203,12 @@ class DSAInterviewAgent:
         transcript: List[Dict[str, Any]],
         target_question: Optional[QuestionItem],
         interview_mode: str = "real",
+        memory_state: Optional[Union[Dict[str, Any], str]] = None,
     ) -> str:
         """
-        Dynamically generates the next interviewer turn by prompting the LLM with candidate input and transcript history.
+        Dynamically generates the next interviewer turn by prompting the LLM with candidate input,
+        strictly the last 2 conversational turns for low-latency context windowing, and the cumulative
+        structured memory state for deep situational awareness.
         Includes pre-execution safety filters against prompt injections.
         """
         # 1. Pre-execution Safety & Prompt Injection Check
@@ -194,11 +232,13 @@ class DSAInterviewAgent:
                 if candidate and candidate not in models_to_try:
                     models_to_try.append(candidate)
 
-            system_prompt = self._build_system_prompt(topic, phase, target_question, interview_mode=interview_mode)
+            system_prompt = self._build_system_prompt(
+                topic, phase, target_question, interview_mode=interview_mode, memory_state=memory_state
+            )
             messages = [{"role": "system", "content": system_prompt}]
 
-            # Recent conversation turns (last 6 turns for context efficiency)
-            recent_turns = transcript[-6:] if len(transcript) > 6 else transcript
+            # Optimized Windowed Context: strictly the last 2 conversational turns
+            recent_turns = transcript[-2:] if len(transcript) > 2 else transcript
             for turn in recent_turns:
                 role = "assistant" if turn.get("role") == "ai" else "user"
                 messages.append({
@@ -235,7 +275,9 @@ class DSAInterviewAgent:
 
         # 4. Heuristic Fallback
         logger.info(f"Using intelligent DSA heuristic fallback for interviewer response (mode: {interview_mode}).")
-        return self._heuristic_dsa_response(topic, phase, candidate_text, target_question, interview_mode=interview_mode)
+        return self._heuristic_dsa_response(
+            topic, phase, candidate_text, target_question, interview_mode=interview_mode, memory_state=memory_state
+        )
 
     def _heuristic_dsa_response(
         self,
@@ -244,6 +286,7 @@ class DSAInterviewAgent:
         candidate_text: str,
         target_question: Optional[QuestionItem],
         interview_mode: str = "real",
+        memory_state: Optional[Union[Dict[str, Any], str]] = None,
     ) -> str:
         """Intelligent heuristic fallback tailored to DSA algorithms and technical interview questions."""
         lower_text = candidate_text.lower()
@@ -253,6 +296,14 @@ class DSAInterviewAgent:
             "What are the edge cases for this approach?",
             "How does your solution perform under memory constraints?"
         ]
+
+        parsed_mem = memory_state
+        if isinstance(parsed_mem, str):
+            try:
+                import json
+                parsed_mem = json.loads(parsed_mem)
+            except Exception:
+                parsed_mem = {}
 
         # Coached mode guidance block helper: ONLY 'What You Should Say' and 'Target Complexity'
         coached_guidance = ""
@@ -301,7 +352,12 @@ class DSAInterviewAgent:
             return msg + coached_guidance
 
         elif phase == "probing":
-            probing_q = follow_ups[0] if follow_ups else "How does this scale to 10^7 elements?"
+            probing_q = None
+            if isinstance(parsed_mem, dict) and parsed_mem.get("open_weaknesses"):
+                probing_q = f"Earlier you noted: '{parsed_mem['open_weaknesses'][0]}'. How can you eliminate this inefficiency or handle this edge case?"
+            if not probing_q:
+                probing_q = follow_ups[0] if follow_ups else "How does this scale to 10^7 elements?"
+
             msg = (
                 f"Great implementation details. Let's dig deeper into the algorithmic trade-offs in our **Probing** phase:\n\n"
                 f"**Deep-Dive Question**: {probing_q}\n\n"

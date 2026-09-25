@@ -171,6 +171,13 @@ async def get_session(
             return dt.replace(tzinfo=timezone.utc)
         return dt
 
+    memory_state_data = None
+    if getattr(session, "memory_state_json", None):
+        try:
+            memory_state_data = json.loads(session.memory_state_json)
+        except Exception:
+            memory_state_data = {}
+
     return InterviewSessionDetailResponse(
         id=session.id,
         user_id=session.user_id,
@@ -184,6 +191,7 @@ async def get_session(
         ended_at=_to_aware_utc(session.ended_at),
         transcript=transcript_list,
         boilerplate_code=starter_code,
+        memory_state=memory_state_data,
     )
 
 @router.get("/{session_id}/boilerplate")

@@ -159,3 +159,8 @@ Thumbs.db
 Thumbs.db:encryptable
 [Dd]esktop.ini
 $RECYCLE.BIN/
+
+# Memory Management Implementation
+interview_agent_architecture.md
+memory_management_implementation.md
+memory_management_implementation_plan.md

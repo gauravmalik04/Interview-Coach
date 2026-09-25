@@ -11,6 +11,15 @@ def generate_uuid() -> str:
 def utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
+DEFAULT_MEMORY_STATE = {
+    "data_structures_used": [],
+    "claimed_time_complexity": None,
+    "claimed_space_complexity": None,
+    "identified_edge_cases": [],
+    "open_weaknesses": [],
+    "key_algorithmic_approach": None,
+}
+
 class InterviewSession(Base):
     """Interview Session Model representing an ongoing or completed interview."""
     __tablename__ = "interview_sessions"
@@ -24,6 +33,7 @@ class InterviewSession(Base):
     status = Column(String(50), nullable=False, default="active")  # active, paused, completed
     current_phase = Column(String(50), nullable=False, default="intro")  # intro, warm_up, core, probing, closing, done
     transcript_json = Column(Text, nullable=False, default="[]")  # JSON list of turns
+    memory_state_json = Column(Text, nullable=False, default="{}")  # Windowed state memory JSON
     elapsed_seconds = Column(Integer, nullable=False, default=0)
     started_at = Column(DateTime(timezone=True), default=utc_now, nullable=False)
     ended_at = Column(DateTime(timezone=True), nullable=True)

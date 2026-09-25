@@ -60,11 +60,15 @@ async def interview_websocket_endpoint(websocket: WebSocket, session_id: str):
         # Ensure initial AI welcome message exists
         initial_ai_text, phase = await interview_engine.ensure_initial_message(session, db)
 
-        # Send session initialization event with full transcript history
         try:
             transcript = json.loads(session.transcript_json) if session.transcript_json else []
         except Exception:
             transcript = []
+
+        try:
+            memory_state = json.loads(session.memory_state_json) if session.memory_state_json else {}
+        except Exception:
+            memory_state = {}
 
         def _to_utc_iso(dt):
             if not dt:
@@ -83,6 +87,7 @@ async def interview_websocket_endpoint(websocket: WebSocket, session_id: str):
             "ended_at": _to_utc_iso(session.ended_at),
             "elapsed_seconds": session.elapsed_seconds or 0,
             "transcript": transcript,
+            "memory_state": memory_state,
         })
 
     # Main WebSocket interaction loop

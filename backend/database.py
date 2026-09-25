@@ -69,6 +69,9 @@ async def init_db() -> None:
                 if "elapsed_seconds" not in existing_cols:
                     logger.info("Migrating schema: adding 'elapsed_seconds' to interview_sessions")
                     sync_conn.execute(text("ALTER TABLE interview_sessions ADD COLUMN elapsed_seconds INTEGER DEFAULT 0"))
+                if "memory_state_json" not in existing_cols:
+                    logger.info("Migrating schema: adding 'memory_state_json' to interview_sessions")
+                    sync_conn.execute(text("ALTER TABLE interview_sessions ADD COLUMN memory_state_json TEXT DEFAULT '{}'"))
             if "users" in inspector.get_table_names():
                 existing_user_cols = {col["name"] for col in inspector.get_columns("users")}
                 if "profile_data" not in existing_user_cols:

@@ -29,6 +29,7 @@ class InterviewSessionResponse(BaseModel):
 class InterviewSessionDetailResponse(InterviewSessionResponse):
     transcript: List[Dict[str, Any]] = []
     boilerplate_code: Optional[str] = None
+    memory_state: Optional[Dict[str, Any]] = None
 
 class UpdateTimerRequest(BaseModel):
     elapsed_seconds: int = Field(default=0, ge=0, description="Elapsed time in seconds for the session")

@@ -21,6 +21,9 @@ class InterviewState(TypedDict):
     # Phase machine: intro -> warm_up -> core -> probing -> closing -> done
     phase: str
     
+    # Structured windowed state memory
+    memory_state: Dict[str, Any]
+    
     # Serialized transcript for evaluation
     transcript: List[Dict[str, Any]]
 

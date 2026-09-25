@@ -1,16 +1,51 @@
+import asyncio
 import json
 import logging
 from datetime import datetime, timezone
 from typing import Dict, Any, List, Tuple, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
-from backend.models.interview import InterviewSession
+from backend.models.interview import InterviewSession, DEFAULT_MEMORY_STATE
 from backend.services.question_loader import question_loader, QuestionItem
 from backend.agents.interview_agent import dsa_interview_agent
+from backend.agents.state_extractor import state_extractor
 
 logger = logging.getLogger("ai_interview.engine")
 
 PHASES = ["intro", "warm_up", "core", "probing", "closing", "done"]
+
+async def _run_background_memory_extraction(
+    session_id: str,
+    target_question: Optional[QuestionItem],
+    candidate_text: str,
+    prior_memory_state: str,
+) -> None:
+    """
+    Background worker task: extracts structured algorithmic features from candidate's reply
+    and commits updated memory_state_json using an independent database session.
+    Runs concurrently without blocking candidate-facing response generation.
+    """
+    try:
+        from backend.database import AsyncSessionLocal
+
+        updated_state = await state_extractor.extract_and_update_state(
+            current_state=prior_memory_state,
+            target_question=target_question,
+            candidate_reply=candidate_text,
+        )
+
+        async with AsyncSessionLocal() as bg_db:
+            result = await bg_db.execute(
+                select(InterviewSession).where(InterviewSession.id == session_id)
+            )
+            bg_session = result.scalar_one_or_none()
+            if bg_session:
+                bg_session.memory_state_json = json.dumps(updated_state)
+                await bg_db.commit()
+                logger.info(f"Background memory state updated successfully for session {session_id}")
+    except Exception as e:
+        logger.warning(f"Error in background memory extraction for session {session_id}: {e}", exc_info=True)
 
 class InterviewEngine:
     """Service to orchestrate adaptive DSA interview state progression and dialogue turns."""
@@ -56,8 +91,9 @@ class InterviewEngine:
         db: AsyncSession,
     ) -> Tuple[str, str, bool, Optional[str]]:
         """
-        Process candidate response, update transcript, advance phase, and dynamically generate next AI turn
-        using the LLM agent.
+        Process candidate response using dual-thread Windowed State Architecture:
+        - Thread 1 (Foreground): Generates next AI turn with low latency using a 2-turn window + situational memory state.
+        - Thread 2 (Background): Concurrently extracts and updates long-term structured memory via asyncio.create_task.
         Returns: (ai_response_text, new_phase, is_complete, target_boilerplate)
         """
         # Parse transcript
@@ -102,8 +138,22 @@ class InterviewEngine:
             is_complete = True
 
         mode = getattr(session, "interview_mode", "real") or "real"
+        current_memory_state = session.memory_state_json or "{}"
 
-        # Dynamically generate AI response using the LangGraph DSA agent
+        # Thread 2 (Background Extraction Worker):
+        # Fire-and-forget background extraction task using its own DB session
+        if session.id:
+            asyncio.create_task(
+                _run_background_memory_extraction(
+                    session_id=session.id,
+                    target_question=target_q,
+                    candidate_text=candidate_text,
+                    prior_memory_state=current_memory_state,
+                )
+            )
+
+        # Thread 1 (Foreground Response Generation):
+        # Fast generation using 2-turn window and situational memory state
         try:
             ai_text = await dsa_interview_agent.generate_response(
                 topic=session.topic,
@@ -112,6 +162,7 @@ class InterviewEngine:
                 transcript=transcript,
                 target_question=target_q,
                 interview_mode=mode,
+                memory_state=current_memory_state,
             )
         except Exception as e:
             logger.error(f"Error in dsa_interview_agent: {e}", exc_info=True)
@@ -121,6 +172,7 @@ class InterviewEngine:
                 candidate_text=candidate_text,
                 target_question=target_q,
                 interview_mode=mode,
+                memory_state=current_memory_state,
             )
 
         # Append AI response to transcript
@@ -145,6 +197,8 @@ class InterviewEngine:
         # Update session in DB
         session.current_phase = next_phase
         session.transcript_json = json.dumps(transcript)
+        if not session.memory_state_json:
+            session.memory_state_json = "{}"
         if is_complete:
             session.status = "completed"
             session.ended_at = datetime.now(timezone.utc)
@@ -160,6 +214,9 @@ class InterviewEngine:
             transcript: List[Dict[str, Any]] = json.loads(session.transcript_json) if session.transcript_json else []
         except Exception:
             transcript = []
+
+        if not session.memory_state_json:
+            session.memory_state_json = "{}"
 
         if not transcript:
             greeting = self.get_initial_greeting(session)
